@@ -47,16 +47,16 @@ def parse_format_04(data: bytes):
         "battery": data[19] * 0.01
     }
 
-def insert_data_to_db(data):
+def insert_data_to_db(data,api_data):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
         INSERT INTO sensor_data
-        (timestamp, month,  temperature, humidity, light, uv_index, pressure, sound_level, discomfort_index, heatstroke_risk, vibration, battery)
-        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        (timestamp, month,  device_count,temperature, humidity, light, uv_index, pressure, sound_level, discomfort_index, heatstroke_risk, vibration, battery)
+        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], data["month"],data["temperature"], data["humidity"], data["light"], data["uv_index"],
+        data["timestamp"], data["month"],api_data,data["temperature"], data["humidity"], data["light"], data["uv_index"],
         data["pressure"], data["sound_level"], data["discomfort_index"], data["heatstroke_risk"],
         data["vibration"], data["battery"]
     ))
@@ -105,10 +105,10 @@ async def periodic_scan(interval=30):
                 raw_data = adv_data.manufacturer_data.get(OMRON_MANUFACTURER_ID)
                 if raw_data:
                     parsed = parse_format_04(raw_data)
-                    api_data=api_request()
-                    log_error(api_data)
+                    api_data=int(api_request())
+                    log_error(str(type(api_data)))
                     if parsed:
-                        insert_data_to_db(parsed)
+                        insert_data_to_db(parsed,api_data)
                     else:
                         log_error("データフォーマットの解析に失敗しました。")
                 else:
