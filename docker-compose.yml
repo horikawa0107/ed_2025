@@ -1,0 +1,26 @@
+version: '3'  # Docker Composeのバージョン
+
+services:
+  web:  # Flaskアプリケーション
+    build: .  # Dockerfileからビルド
+    ports:
+      - "5001:5000"  # ホストの5001をコンテナの5000にマッピング
+    environment:
+      - FLASK_ENV=development  # デバッグモードを有効化
+    depends_on:
+      - db  # MySQLサービスに依存
+    
+
+  db:  # MySQLデータベース
+    image: mysql:8.0  # MySQLの公式イメージを使用
+    environment:
+      MYSQL_ROOT_PASSWORD: password  # rootユーザーのパスワード
+      MYSQL_DATABASE: flask_db  # 初期作成するデータベース名
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci      
+    ports:
+      - "3306:3306"  # MySQLのデフォルトポートをマッピング
+    volumes:
+      - db_data:/var/lib/mysql  # データ永続化
+
+volumes:
+  db_data:  # MySQLのデータを保持するボリューム

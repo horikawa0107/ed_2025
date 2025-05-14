@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>エラーログ</title>
+</head>
+<body>
+    <h1>BLE スキャンエラー</h1>
+    <table border="1">
+        <tr><th>時刻</th><th>エラー内容</th></tr>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.error }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="/">← センサーデータに戻る</a></p>
+</body>
+</html>
