@@ -9,11 +9,13 @@ from flask import Flask, render_template
 import mysql.connector
 import os
 
+
 app = Flask(__name__)
 OMRON_ADDRESS = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
+
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -24,11 +26,17 @@ def get_db_connection():
     )
 
 def api_request():
-    # APIリクエストを送信
-    tenki_data = requests.get(API_URL).json()
-    # tenki_data = requests.get(url).json()
-    return tenki_data['forecasts'][0]["temperature"]["max"]["celsius"]
-
+    try:
+        tenki_data = requests.get(API_URL).json()
+        temp = tenki_data['forecasts'][0]["temperature"]["max"]["celsius"]
+        if temp is None:
+            log_error("天気APIから気温データが取得できませんでした。")
+            return 0  # デフォルト値を返す or None を返して後で処理する
+        return temp
+    except Exception as e:
+        log_error(f"天気APIリクエスト失敗: {str(e)}")
+        return 0
+    
 def parse_format_04(data: bytes):
     if len(data) < 20:
         return None
@@ -106,7 +114,7 @@ async def periodic_scan(interval=30):
                 if raw_data:
                     parsed = parse_format_04(raw_data)
                     api_data=int(api_request())
-                    log_error(str(type(api_data)))
+                    log_error("データ取得成功")
                     if parsed:
                         insert_data_to_db(parsed,api_data)
                     else:
