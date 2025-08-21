@@ -28,7 +28,7 @@ def get_db_connection():
 def api_request():
     try:
         tenki_data = requests.get(API_URL).json()
-        temp = tenki_data['forecasts'][0]["temperature"]["max"]["celsius"]
+        temp = tenki_data['forecasts'][0]["image"]["width"]
         if temp is None:
             log_error("天気APIから気温データが取得できませんでした。")
             return 0  # デフォルト値を返す or None を返して後で処理する
@@ -43,7 +43,7 @@ def parse_format_04(data: bytes):
     return {
         "month":datetime.now().month,
         "timestamp": datetime.now(),
-        "temperature": (int.from_bytes(data[1:3], 'little', signed=True) / 100)-6,
+        "temperature": (int.from_bytes(data[1:3], 'little', signed=True) / 100),
         "humidity": int.from_bytes(data[3:5], 'little') / 100,
         "light": int.from_bytes(data[5:7], 'little'),
         "uv_index": int.from_bytes(data[7:9], 'little') / 100,
@@ -114,7 +114,7 @@ async def periodic_scan(interval=30):
                 if raw_data:
                     parsed = parse_format_04(raw_data)
                     api_data=int(api_request())
-                    log_error("データ取得成功")
+                    print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
                     if parsed:
                         insert_data_to_db(parsed,api_data)
                     else:
