@@ -24,18 +24,18 @@ model_pkl = joblib.load(open('/Users/horikawafuka2/Documents/class_2025/ed/dev_m
 def predict_comfort_score(sensor_data):
     try:
         # 現在の月を取得
-        current_month = datetime.datetime.now().month  
+        current_month = datetime.now().month  
         # 新しいデータ
         new_data = pd.DataFrame([{
-            'temperature': sensor_data["temperature"],
-            'humidity': sensor_data["humidity"],
-            'light': sensor_data["light"],
-            'pressure': sensor_data["pressure"],
-            'sound_level': sensor_data["sound_level"],
-            'month': current_month
+            'avg_temperature': sensor_data["temperature"],
+            'avg_humidity': sensor_data["humidity"],
+            'avg_light': sensor_data["light"],
+            'avg_pressure': sensor_data["pressure"],
+            'avg_sound_level': sensor_data["sound_level"],
+            'avg_month': current_month
         }])
         prediction = model_pkl.predict(new_data)
-        return prediction
+        return float(prediction[0])
     except Exception as e:
         log_error(f"予測に失敗: {str(e)}")
         return None
@@ -78,18 +78,17 @@ def parse_format_04(data: bytes):
         "battery": data[19] * 0.01
     }
 
-def insert_data_to_learning_db(data,api_data):
+def insert_data_to_predicted_db(data, comfort_score):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO sensor_data
-        (timestamp, month,  device_count,temperature, humidity, light, uv_index, pressure, sound_level, discomfort_index, heatstroke_risk, vibration, battery)
-        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO predicted_data
+        (timestamp, month,  temperature, humidity, light, pressure, sound_level, comfort_index, battery)
+        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], data["month"],api_data,data["temperature"], data["humidity"], data["light"], data["uv_index"],
-        data["pressure"], data["sound_level"], data["discomfort_index"], data["heatstroke_risk"],
-        data["vibration"], data["battery"]
+        data["timestamp"], data["month"],data["temperature"], data["humidity"], data["light"], 
+        data["pressure"], data["sound_level"],  comfort_score, data["battery"]
     ))
     connection.commit()
     cursor.close()
@@ -139,7 +138,8 @@ async def periodic_scan(interval=30):
                     api_data=int(api_request())
                     print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
                     if parsed:
-                        insert_data_to_learning_db(parsed,api_data)
+                        discomfort_score = predict_comfort_score(parsed)
+                        insert_data_to_predicted_db(parsed,discomfort_score)
                     else:
                         log_error("データフォーマットの解析に失敗しました。")
                 else:
@@ -174,6 +174,17 @@ def show_errors():
     else:
         logs = [{"timestamp": "N/A", "error": "エラーログファイルが存在しません"}]
     return render_template('errors.html', logs=logs)
+
+@app.route('/predicted')
+def show_predicted():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM predicted_data ORDER BY timestamp DESC LIMIT 1")
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return render_template('use_model_index.html', data=row)
+
 
 if __name__ == '__main__':
     ble_thread = Thread(target=run_ble_loop)

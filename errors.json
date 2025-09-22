@@ -1762,5 +1762,205 @@
   {
     "timestamp": "2025-05-16 09:03:46",
     "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-21 22:20:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-21 22:21:36",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-08-21 22:21:36",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:22:28",
+    "error": "天気APIリクエスト失敗: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+  },
+  {
+    "timestamp": "2025-08-21 22:22:28",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:23:20",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-08-21 22:23:20",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:24:11",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-08-21 22:24:11",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:25:02",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-08-21 22:25:02",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:25:54",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-08-21 22:25:54",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:26:52",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:27:44",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:28:36",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:29:27",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:30:18",
+    "error": "データ取得成功"
+  },
+  {
+    "timestamp": "2025-08-21 22:45:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-21 22:50:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-21 23:02:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 22:29:51",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:29:51",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:30:43",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:30:43",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:31:34",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:31:34",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:32:26",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:32:26",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:33:17",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:33:17",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:34:08",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-08-22 22:34:08",
+    "error": "スキャン中に例外発生: Not enough parameters for the SQL statement"
+  },
+  {
+    "timestamp": "2025-08-22 22:49:31",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 22:50:23",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 22:51:14",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 22:52:06",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 22:52:57",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 22:58:23",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 22:59:16",
+    "error": "スキャン中に例外発生: Python type numpy.ndarray cannot be converted"
+  },
+  {
+    "timestamp": "2025-08-22 23:00:03",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 23:00:53",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 23:01:44",
+    "error": "スキャン中に例外発生: 1054 (42S22): Unknown column 'comfort_index' in 'field list'"
+  },
+  {
+    "timestamp": "2025-08-22 23:02:34",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 23:03:29",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 23:18:00",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-08-22 23:20:34",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-09-22 10:57:59",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-09-22 10:58:29",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-09-22 11:13:21",
+    "error": "デバイスが見つかりません。"
   }
 ]

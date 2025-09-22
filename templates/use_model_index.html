@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>センサーデータ表示</title>
+</head>
+<body>
+    <h1>最新のセンサーデータと快適指数</h1>
+    <table border="1">
+        <tr><th>温度</th><td>{{ data.temperature }}</td></tr>
+        <tr><th>湿度</th><td>{{ data.humidity }}</td></tr>
+        <tr><th>照度</th><td>{{ data.light }}</td></tr>
+        <tr><th>気圧</th><td>{{ data.pressure }}</td></tr>
+        <tr><th>音</th><td>{{ data.sound_level }}</td></tr>
+        <tr><th>バッテリー</th><td>{{ data.battery }}</td></tr>
+        <tr><th>推定快適指数</th><td>{{ data.comfort_index }}</td></tr>
+    </table>
+</body>
+</html>
+
+

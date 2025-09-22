@@ -1,24 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日もお疲れ様！！</title>
-</head>
-<body>
-    <h1>今日は木曜日！明日行けば、華金ですね！！</h1>
-    <form action="/add" method="post">
-        <input type="text" name="message" placeholder="Enter your message" required>
-        <button type="submit">Add Message</button>
-    </form>
-    <h2>Messages:</h2>
-    <ul>
-        {% for message in messages %}
-        <li>{{ message[0] }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +5,7 @@
     <title>センサーデータ表示</title>
 </head>
 <body>
-    <h1>最新のセンサーデータ</h1>
+    <h1>センサーデータログ</h1>
     <table border="1">
         <tr>
             <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>UV</th><th>気圧</th><th>音</th><th>不快指数</th><th>熱中症</th><th>振動</th><th>バッテリー</th>
