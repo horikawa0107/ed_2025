@@ -24,7 +24,7 @@ model_pkl = joblib.load(open('/Users/horikawafuka2/Documents/class_2025/ed/dev_m
 def predict_comfort_score(sensor_data):
     try:
         # 現在の月を取得
-        current_month = datetime.datetime.now().month  
+        current_month = datetime.now().month  
         # 新しいデータ
         new_data = pd.DataFrame([{
             'temperature': sensor_data["temperature"],
@@ -94,6 +94,8 @@ def insert_data_to_learning_db(data,api_data):
     connection.commit()
     cursor.close()
     connection.close()
+
+
 
 # エラーをファイルとリストに記録
 error_log = []
