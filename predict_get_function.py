@@ -177,9 +177,12 @@ def home():
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
     rows = cursor.fetchall()
+     # データ件数を取得
+    cursor.execute("SELECT COUNT(*) AS cnt FROM sensor_data")
+    count = cursor.fetchone()["cnt"]
     cursor.close()
     connection.close()
-    return render_template('index.html', data=rows)
+    return render_template('index.html', data=rows,count=count)
 
 @app.route('/predicted')
 def show_predicted():
