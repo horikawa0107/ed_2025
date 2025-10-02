@@ -1962,5 +1962,105 @@
   {
     "timestamp": "2025-09-22 11:13:21",
     "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-09-22 11:51:12",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:52:03",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:52:53",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:53:43",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:54:33",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-09-22 11:55:24",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:56:14",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:57:04",
+    "error": "予測に失敗: type object 'datetime.datetime' has no attribute 'datetime'"
+  },
+  {
+    "timestamp": "2025-09-22 11:58:23",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-09-22 11:59:13",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-09-22 12:36:34",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-09-22 12:42:17",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-09-25 15:55:10",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 21:57:16",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-10-02 21:57:46",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-10-02 21:58:16",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-10-02 21:59:07",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-02 21:59:57",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:00:47",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-02 22:01:37",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-02 22:02:28",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-02 22:06:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:13:22",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:15:02",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:16:43",
+    "error": "デバイスが見つかりません。"
   }
 ]
