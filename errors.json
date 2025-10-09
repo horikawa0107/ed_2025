@@ -2062,5 +2062,185 @@
   {
     "timestamp": "2025-10-02 22:16:43",
     "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:19:13",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:30:58",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:31:48",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:40:11",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:56:58",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 22:58:44",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-10-02 22:59:34",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-10-02 23:24:08",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-10-02 23:24:58",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-10-02 23:25:48",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 23:26:38",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-02 23:27:28",
+    "error": "予測に失敗: The feature names should match those that were passed during fit.\nFeature names unseen at fit time:\n- avg_humidity\n- avg_light\n- avg_month\n- avg_pressure\n- avg_sound_level\n- ...\nFeature names seen at fit time, yet now missing:\n- humidity\n- light\n- month\n- pressure\n- sound_level\n- ...\n"
+  },
+  {
+    "timestamp": "2025-10-02 23:35:58",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 08:52:00",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 08:55:33",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:05:22",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:07:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:12:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:13:04",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:16:26",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:26:27",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:29:48",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:31:29",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:37:21",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-03 09:40:42",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 21:44:10",
+    "error": "スキャン中に例外発生: Bluetooth device is turned off"
+  },
+  {
+    "timestamp": "2025-10-09 21:49:29",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 21:54:31",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:03:47",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:04:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:05:27",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:13:10",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:14:00",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:16:31",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:18:12",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:21:21",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:35:24",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:36:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:43:53",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:49:05",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:49:55",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:50:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 22:52:26",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 23:09:55",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-09 23:10:46",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
   }
 ]

@@ -182,7 +182,7 @@ def home():
     count = cursor.fetchone()["cnt"]
     cursor.close()
     connection.close()
-    return render_template('index.html', data=rows,count=count)
+    return render_template('record.html', data=rows,count=count)
 
 @app.route('/predicted')
 def show_predicted():
@@ -192,7 +192,7 @@ def show_predicted():
     row = cursor.fetchone()
     cursor.close()
     connection.close()
-    return render_template('use_model_index.html', data=row)
+    return render_template('display.html', data=row)
 
 
 
