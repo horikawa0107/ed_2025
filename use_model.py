@@ -160,7 +160,7 @@ def home():
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
-    return render_template('index.html', data=rows)
+    return render_template('display.html', data=rows)
 
 @app.route('/errors')
 def show_errors():
@@ -183,7 +183,7 @@ def show_predicted():
     row = cursor.fetchone()
     cursor.close()
     connection.close()
-    return render_template('use_model_index.html', data=row)
+    return render_template('display.html', data=row)
 
 
 if __name__ == '__main__':

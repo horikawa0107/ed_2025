@@ -27,8 +27,8 @@ UPDATE_INTERVAL = 300  # 1時間ごとに再学習
 def load_data_from_mysql():
     conn = get_db_connection()
     query = """
-        SELECT temperature , humidity, light, pressure,  sound_level , discomfort_index, month 
-        FROM sensor_data;
+        SELECT avg_temperature , avg_humidity, avg_light, avg_pressure,  avg_sound_level , avg_discomfort_index, avg_month 
+        FROM sensor_data_avg;
     """
     df = pd.read_sql(query, conn)
     conn.close()
@@ -45,9 +45,9 @@ def train_and_save_model():
         return
     
     # --- 特徴量と目的変数に分割 ---
-    features = ['temperature', 'humidity', 'light', 'pressure', 'sound_level', 'month']
+    features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'avg_month']
     X = df[features]
-    y = df['discomfort_index']
+    y = df['avg_discomfort_index']
     
     # --- 学習用・テスト用データに分割 ---
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -63,7 +63,7 @@ def background_training():
     """一定時間ごとに再学習"""
     while True:
         process_data_if_needed()
-        # train_and_save_model()
+        train_and_save_model()
         time.sleep(UPDATE_INTERVAL)
 
 def predict_comfort_score(sensor_data):
@@ -84,24 +84,6 @@ def predict_comfort_score(sensor_data):
         log_error(f"予測に失敗: {str(e)}")
         return None
     
-# def predict_comfort_score(sensor_data):
-    # try:
-    #     # 現在の月を取得
-    #     current_month = datetime.now().month  
-    #     # 新しいデータ
-    #     new_data = pd.DataFrame([{
-    #         'avg_temperature': sensor_data["temperature"],
-    #         'avg_humidity': sensor_data["humidity"],
-    #         'avg_light': sensor_data["light"],
-    #         'avg_pressure': sensor_data["pressure"],
-    #         'avg_sound_level': sensor_data["sound_level"],
-    #         'avg_month': current_month
-    #     }])
-    #     prediction = model_pkl.predict(new_data)
-    #     return float(prediction[0])
-    # except Exception as e:
-    #     log_error(f"予測に失敗: {str(e)}")
-    #     return None
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -115,19 +97,6 @@ def get_db_connection():
 def process_data_if_needed():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
-    # データ数をチェック
-    # cursor.execute("SELECT COUNT(*) AS count FROM sensor_data")
-    # count = cursor.fetchone()['count']
-
-
-    # if count < 100:
-    #       print(f"データ数が少ないため処理をスキップします ({count} 件)")
-    #       cursor.close()
-    #       conn.close()
-    #       return
-
-    # print(f"{count} 件のデータを確認。前処理を開始します...")
 
     # すべてのデータを取得
     cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC limit 15")
@@ -172,7 +141,7 @@ def process_data_if_needed():
     conn.commit()
     avg_cursor.close()
     conn.close()
-    print("区間平均の計算と保存が完了しました。")
+    print(f"{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
 
 
 def api_request():
@@ -309,7 +278,7 @@ def home():
     count = cursor.fetchone()["cnt"]
     cursor.close()
     connection.close()
-    return render_template('index.html', data=rows,count=count)
+    return render_template('record.html', data=rows,count=count)
 
 @app.route('/predicted')
 def show_predicted():
@@ -319,7 +288,7 @@ def show_predicted():
     row = cursor.fetchone()
     cursor.close()
     connection.close()
-    return render_template('use_model_index.html', data=row)
+    return render_template('display.html', data=row)
 
 
 

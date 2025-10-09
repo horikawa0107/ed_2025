@@ -6,7 +6,7 @@ from datetime import datetime
 from threading import Thread
     # APIリクエストに必要なライブラリ
 import requests
-from flask import Flask, render_template
+from flask import Flask, render_template,redirect,request
 import mysql.connector
 import os
 from sklearn.model_selection import train_test_split
@@ -20,6 +20,8 @@ OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
 model_pkl = joblib.load(open('/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl', 'rb'))
+UPDATE_INTERVAL = 3600  # 1時間ごとに再学習
+
 
 def predict_comfort_score(sensor_data):
     try:
@@ -27,15 +29,15 @@ def predict_comfort_score(sensor_data):
         current_month = datetime.now().month  
         # 新しいデータ
         new_data = pd.DataFrame([{
-            'temperature': sensor_data["temperature"],
-            'humidity': sensor_data["humidity"],
-            'light': sensor_data["light"],
-            'pressure': sensor_data["pressure"],
-            'sound_level': sensor_data["sound_level"],
-            'month': current_month
+            'avg_temperature': sensor_data["temperature"],
+            'avg_humidity': sensor_data["humidity"],
+            'avg_light': sensor_data["light"],
+            'avg_pressure': sensor_data["pressure"],
+            'avg_sound_level': sensor_data["sound_level"],
+            'avg_month': current_month
         }])
         prediction = model_pkl.predict(new_data)
-        return prediction
+        return float(prediction[0])
     except Exception as e:
         log_error(f"予測に失敗: {str(e)}")
         return None
@@ -95,6 +97,21 @@ def insert_data_to_learning_db(data,api_data):
     cursor.close()
     connection.close()
 
+def insert_data_to_predicted_db(data, comfort_score):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO predicted_data
+        (timestamp, month,  temperature, humidity, light, pressure, sound_level, comfort_index, battery)
+        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (
+        data["timestamp"], data["month"],data["temperature"], data["humidity"], data["light"], 
+        data["pressure"], data["sound_level"],  comfort_score, data["battery"]
+    ))
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 
 # エラーをファイルとリストに記録
@@ -142,6 +159,8 @@ async def periodic_scan(interval=30):
                     print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
                     if parsed:
                         insert_data_to_learning_db(parsed,api_data)
+                        discomfort_score = predict_comfort_score(parsed)
+                        insert_data_to_predicted_db(parsed,discomfort_score)
                     else:
                         log_error("データフォーマットの解析に失敗しました。")
                 else:
@@ -156,13 +175,28 @@ def run_ble_loop():
 
 @app.route('/')
 def home():
+    # connection = get_db_connection()
+    # cursor = connection.cursor(dictionary=True)
+    # cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
+    # rows = cursor.fetchall()
+    #  # データ件数を取得
+    # cursor.execute("SELECT COUNT(*) AS cnt FROM sensor_data")
+    # count = cursor.fetchone()["cnt"]
+    # cursor.close()
+    # connection.close()
+    return render_template('index.html')
+
+@app.route('/predicted')
+def show_predicted():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
-    rows = cursor.fetchall()
+    cursor.execute("SELECT * FROM predicted_data ORDER BY timestamp DESC LIMIT 1")
+    row = cursor.fetchone()
     cursor.close()
     connection.close()
-    return render_template('record.html', data=rows)
+    return render_template('display.html', data=row)
+
+
 
 @app.route('/errors')
 def show_errors():
@@ -176,6 +210,53 @@ def show_errors():
     else:
         logs = [{"timestamp": "N/A", "error": "エラーログファイルが存在しません"}]
     return render_template('errors.html', logs=logs)
+
+@app.route('/select')
+def show_select():
+    connection = get_db_connection()  # データベース接続を取得
+    cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
+    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    messages = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
+    cursor.close()  # カーソルを閉じる
+    connection.close()
+    return render_template('select.html' ,messages=messages)
+
+
+@app.route("/register", methods=["POST"])
+def move_register_page():
+    connection = get_db_connection()  # データベース接続を取得
+    cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
+    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    messages = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
+    cursor.close()  # カーソルを閉じる
+    connection.close()
+    return render_template('register.html', messages=messages)  # messagesをテンプレートに渡してHTMLをレンダリング
+
+
+@app.route('/add', methods=['POST'])
+def add_message():
+    # メッセージを追加する処理を行うルート（POSTリクエストを処理）
+    message = request.form['message']  # フォームから送信されたメッセージを取得
+    connection = get_db_connection()  # データベース接続を取得
+    cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
+    cursor.execute("INSERT INTO greetings (message) VALUES (%s)", (message,))  # メッセージをgreetingsテーブルに挿入
+    connection.commit()  # データベースに変更を反映
+    cursor.close()  # カーソルを閉じる
+    connection.close()  # データベース接続を閉じる
+    return render_template("register.html")
+
+@app.route("/look", methods=["POST"])
+def move_display_page():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
+    rows = cursor.fetchall()
+     # データ件数を取得
+    cursor.execute("SELECT COUNT(*) AS cnt FROM sensor_data")
+    count = cursor.fetchone()["cnt"]
+    cursor.close()
+    connection.close()
+    return render_template('record.html', data=rows,count=count)
 
 if __name__ == '__main__':
     ble_thread = Thread(target=run_ble_loop)

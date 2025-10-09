@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日もお疲れ様！！</title>
+</head>
+<body>
+    <h1>入力フォーム</h1>
+    <form action="/add" method="post">
+        <input type="text" name="message" placeholder="Enter your message" required>
+        <button type="submit">Add Message</button>
+    </form>
+    <h2>Messages:</h2>
+    <ul>
+        {% for message in messages %}
+        <li>{{ message[0] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
