@@ -5,9 +5,9 @@
     <title>部屋選択ページ</title>
 </head>
 <body>
-    {% for message in messages %}
+    {% for room in rooms %}
         <form action="/look" method="POST">
-            <input type="submit" value="{{ message[0] }}">
+            <input type="submit" value="{{ room[0] }}">
         </form>
     {% endfor %}
 

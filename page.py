@@ -13,21 +13,63 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import joblib
+import time
+import threading
 
 app = Flask(__name__)
 OMRON_ADDRESS = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
-model_pkl = joblib.load(open('/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl', 'rb'))
-UPDATE_INTERVAL = 3600  # 1時間ごとに再学習
+UPDATE_INTERVAL = 300  # 1時間ごとに再学習
 
+# 2. MySQLからデータを読み込み（前処理済みテーブル）
+def load_data_from_mysql():
+    conn = get_db_connection()
+    query = """
+        SELECT avg_temperature , avg_humidity, avg_light, avg_pressure,  avg_sound_level , avg_discomfort_index, avg_month 
+        FROM sensor_data_avg;
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
+    return df
+
+
+def train_and_save_model():
+    current_time= datetime.now()
+    # --- データ取得 ---
+    df = load_data_from_mysql()
+    print(df)
+    if df.empty:
+        print("データがありません。学習をスキップします。")
+        return
+    
+    # --- 特徴量と目的変数に分割 ---
+    features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'avg_month']
+    X = df[features]
+    y = df['avg_discomfort_index']
+    
+    # --- 学習用・テスト用データに分割 ---
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+    model.fit(X_train, y_train)
+    
+    joblib.dump(model, "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl")
+
+    print("モデルを更新しました")
+
+def background_training():
+    """一定時間ごとに再学習"""
+    while True:
+        process_data_if_needed()
+        train_and_save_model()
+        time.sleep(UPDATE_INTERVAL)
 
 def predict_comfort_score(sensor_data):
     try:
-        # 現在の月を取得
+        model = joblib.load("/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl")
         current_month = datetime.now().month  
-        # 新しいデータ
         new_data = pd.DataFrame([{
             'avg_temperature': sensor_data["temperature"],
             'avg_humidity': sensor_data["humidity"],
@@ -36,11 +78,12 @@ def predict_comfort_score(sensor_data):
             'avg_sound_level': sensor_data["sound_level"],
             'avg_month': current_month
         }])
-        prediction = model_pkl.predict(new_data)
+        prediction = model.predict(new_data)
         return float(prediction[0])
     except Exception as e:
         log_error(f"予測に失敗: {str(e)}")
         return None
+    
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -50,23 +93,61 @@ def get_db_connection():
         database='flask_db'
     )
 
-def room_id():
-    try:
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM predicted_data ORDER BY timestamp DESC LIMIT 1")
-        row = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return render_template('display.html', data=row)
-    except Exception as e:
-        log_error(f"天気APIリクエスト失敗: {str(e)}")
-        return 0
+
+def process_data_if_needed():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # すべてのデータを取得
+    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC limit 15")
+
+    all_rows = cursor.fetchall()
+    print(all_rows[0])
+    cursor.close()
+
+    avg_cursor = conn.cursor()
+
+    for i in range(0, len(all_rows), 3):
+        chunk = all_rows[i:i+3]
+        if len(chunk) < 3:
+            continue  # 3件未満は無視
+
+        # 平均計算
+        avg_data = {
+            'timestamp': chunk[0]['timestamp'],  # 最初の時刻を使う
+            'avg_temperature': sum(d['temperature'] for d in chunk) / 3,
+            'avg_humidity': sum(d['humidity'] for d in chunk) / 3,
+            'avg_light': sum(d['light'] for d in chunk) // 3,
+            'avg_pressure': sum(d['pressure'] for d in chunk) / 3,
+            'avg_sound_level': sum(d['sound_level'] for d in chunk) / 3,
+            'avg_discomfort_index': sum(d['discomfort_index'] for d in chunk) / 3,
+            'avg_battery': sum(d['battery'] for d in chunk) / 3,
+            'avg_month': sum(d['month'] for d in chunk) / 3
+        }
+
+        # INSERT
+        avg_cursor.execute("""
+            INSERT INTO sensor_data_avg (
+                timestamp, avg_temperature, avg_humidity, avg_light,  avg_pressure,
+                avg_sound_level, avg_discomfort_index,  avg_battery ,avg_month
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s ,%s)
+        """, (
+            avg_data['timestamp'], avg_data['avg_temperature'], avg_data['avg_humidity'],
+            avg_data['avg_light'],  avg_data['avg_pressure'],
+            avg_data['avg_sound_level'], avg_data['avg_discomfort_index'],
+            avg_data['avg_battery'],avg_data['avg_month']
+        ))
+
+    conn.commit()
+    avg_cursor.close()
+    conn.close()
+    print(f"{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
+
 
 def api_request():
     try:
         tenki_data = requests.get(API_URL).json()
-        temp = tenki_data['forecasts'][0]["temperature"]["max"]["celsius"]
+        temp = tenki_data['forecasts'][0]["image"]["width"]
         if temp is None:
             log_error("天気APIから気温データが取得できませんでした。")
             return 0  # デフォルト値を返す or None を返して後で処理する
@@ -170,7 +251,7 @@ async def periodic_scan(interval=30):
                     parsed = parse_format_04(raw_data)
                     api_data=int(api_request())
                     print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
-                    if parsed and api_data:
+                    if parsed:
                         insert_data_to_learning_db(parsed,api_data)
                         discomfort_score = predict_comfort_score(parsed)
                         insert_data_to_predicted_db(parsed,discomfort_score)
@@ -186,29 +267,17 @@ async def periodic_scan(interval=30):
 def run_ble_loop():
     asyncio.run(periodic_scan())
 
+
 @app.route('/')
 def home():
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
     cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
-    messages = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
+    rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()
-    return render_template('select.html' ,messages=messages)
+    return render_template('select.html' ,rooms=rooms)
 
-#エラー表示ページの処理
-@app.route('/errors')
-def show_errors():
-    # 最新のエラーログを表示
-    if os.path.exists(ERROR_LOG_FILE):
-        with open(ERROR_LOG_FILE, "r", encoding="utf-8") as f:
-            try:
-                logs = json.load(f)
-            except json.JSONDecodeError:
-                logs = [{"timestamp": "N/A", "error": "JSON decode error"}]
-    else:
-        logs = [{"timestamp": "N/A", "error": "エラーログファイルが存在しません"}]
-    return render_template('errors.html', logs=logs)
 
 #部屋の登録ページへ遷移する処理
 @app.route("/register", methods=["POST"])
@@ -216,24 +285,25 @@ def move_register_page():
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
     cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
-    messages = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
-    
+    rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()
-    return render_template('register.html', messages=messages)  # messagesをテンプレートに渡してHTMLをレンダリング
+    return render_template('register.html', rooms=rooms)  # messagesをテンプレートに渡してHTMLをレンダリング
 
 #部屋を登録する処理
 @app.route('/add', methods=['POST'])
 def add_message():
     # メッセージを追加する処理を行うルート（POSTリクエストを処理）
-    message = request.form['message']  # フォームから送信されたメッセージを取得
+    room_name = request.form['room_name']  # フォームから送信されたメッセージを取得
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("INSERT INTO greetings (message) VALUES (%s)", (message,))  # メッセージをgreetingsテーブルに挿入
+    cursor.execute("INSERT INTO greetings (message) VALUES (%s)", (room_name,))  # メッセージをgreetingsテーブルに挿入
     connection.commit()  # データベースに変更を反映
+    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()  # データベース接続を閉じる
-    return render_template("register.html")
+    return render_template("register.html",rooms=rooms)
 
 #bleセンサーの記録を見る
 @app.route("/look", methods=["POST"])
@@ -251,7 +321,25 @@ def move_display_page():
     connection.close()
     return render_template('display.html', predicted_data=predicted_data,latest_data=latest_data,data_count=data_count)
 
+
+
+
+@app.route('/errors')
+def show_errors():
+    # 最新のエラーログを表示
+    if os.path.exists(ERROR_LOG_FILE):
+        with open(ERROR_LOG_FILE, "r", encoding="utf-8") as f:
+            try:
+                logs = json.load(f)
+            except json.JSONDecodeError:
+                logs = [{"timestamp": "N/A", "error": "JSON decode error"}]
+    else:
+        logs = [{"timestamp": "N/A", "error": "エラーログファイルが存在しません"}]
+    return render_template('errors.html', logs=logs)
+
 if __name__ == '__main__':
+    thread = threading.Thread(target=background_training, daemon=True)
+    thread.start()
     ble_thread = Thread(target=run_ble_loop)
     ble_thread.daemon = True
     ble_thread.start()

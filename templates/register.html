@@ -8,13 +8,13 @@
 <body>
     <h1>入力フォーム</h1>
     <form action="/add" method="post">
-        <input type="text" name="message" placeholder="部屋名を入力" required>
+        <input type="text" name="room_name" placeholder="部屋名を入力" required>
         <button type="submit">部屋を登録</button>
     </form>
     <h2>部屋:</h2>
     <ul>
-        {% for message in messages %}
-        <li>{{ message[0] }}</li>
+        {% for room in rooms %}
+        <li>{{ room[0] }}</li>
         {% endfor %}
     </ul>
 </body>
