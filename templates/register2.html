@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部屋登録ページ</title>
+</head>
+<body>
+    <h1>入力フォーム</h1>
+    <form action="/add" method="post">
+        <input type="text" name="room_name" placeholder="部屋名を入力" required>
+        <input type="text" name="room_id" placeholder="ルームIDを入力" required>
+        <input type="number" name="capacity" placeholder="人数を入力" required>
+        <input type="text" name="remarks" placeholder="備考を入力" required>
+        <input type="text" name="floor" placeholder="フロア名を入力" required>
+        <input type="text" name="ble_address" placeholder="BLEアドレスを入力" required>
+        <button type="submit">部屋を登録</button>
+    </form>
+    <h2>部屋:</h2>
+    <ul>
+        {% for room in rooms %}
+        <li>{{ room[0] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

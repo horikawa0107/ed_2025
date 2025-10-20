@@ -15,6 +15,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 import time
 import threading
+import random
 
 app = Flask(__name__)
 OMRON_ADDRESS = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
@@ -23,12 +24,21 @@ ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
 UPDATE_INTERVAL = 300  # 1時間ごとに再学習
 
+
+def get_db_connection():
+    return mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='password',
+        database='ed_2025'
+    )
+
 # 2. MySQLからデータを読み込み（前処理済みテーブル）
 def load_data_from_mysql():
     conn = get_db_connection()
     query = """
-        SELECT avg_temperature , avg_humidity, avg_light, avg_pressure,  avg_sound_level , avg_discomfort_index, avg_month 
-        FROM sensor_data_avg;
+        SELECT avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, avg_month, score_from_avg_device_count
+        FROM processed_sensor_data;
     """
     df = pd.read_sql(query, conn)
     conn.close()
@@ -47,7 +57,7 @@ def train_and_save_model():
     # --- 特徴量と目的変数に分割 ---
     features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'avg_month']
     X = df[features]
-    y = df['avg_discomfort_index']
+    y = df['score_from_avg_device_count']
     
     # --- 学習用・テスト用データに分割 ---
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -55,20 +65,13 @@ def train_and_save_model():
     model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
     model.fit(X_train, y_train)
     
-    joblib.dump(model, "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl")
+    joblib.dump(model, f"/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model.pkl")
 
     print("モデルを更新しました")
 
-def background_training():
-    """一定時間ごとに再学習"""
-    while True:
-        process_data_if_needed()
-        train_and_save_model()
-        time.sleep(UPDATE_INTERVAL)
-
 def predict_comfort_score(sensor_data):
     try:
-        model = joblib.load("/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_score_rf_model.pkl")
+        model = joblib.load("/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model.pkl")
         current_month = datetime.now().month  
         new_data = pd.DataFrame([{
             'avg_temperature': sensor_data["temperature"],
@@ -85,69 +88,10 @@ def predict_comfort_score(sensor_data):
         return None
     
 
-def get_db_connection():
-    return mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='password',
-        database='flask_db'
-    )
-
-
-def process_data_if_needed():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    # すべてのデータを取得
-    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC limit 15")
-
-    all_rows = cursor.fetchall()
-    print(all_rows[0])
-    cursor.close()
-
-    avg_cursor = conn.cursor()
-
-    for i in range(0, len(all_rows), 3):
-        chunk = all_rows[i:i+3]
-        if len(chunk) < 3:
-            continue  # 3件未満は無視
-
-        # 平均計算
-        avg_data = {
-            'timestamp': chunk[0]['timestamp'],  # 最初の時刻を使う
-            'avg_temperature': sum(d['temperature'] for d in chunk) / 3,
-            'avg_humidity': sum(d['humidity'] for d in chunk) / 3,
-            'avg_light': sum(d['light'] for d in chunk) // 3,
-            'avg_pressure': sum(d['pressure'] for d in chunk) / 3,
-            'avg_sound_level': sum(d['sound_level'] for d in chunk) / 3,
-            'avg_discomfort_index': sum(d['discomfort_index'] for d in chunk) / 3,
-            'avg_battery': sum(d['battery'] for d in chunk) / 3,
-            'avg_month': sum(d['month'] for d in chunk) / 3
-        }
-
-        # INSERT
-        avg_cursor.execute("""
-            INSERT INTO sensor_data_avg (
-                timestamp, avg_temperature, avg_humidity, avg_light,  avg_pressure,
-                avg_sound_level, avg_discomfort_index,  avg_battery ,avg_month
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s ,%s)
-        """, (
-            avg_data['timestamp'], avg_data['avg_temperature'], avg_data['avg_humidity'],
-            avg_data['avg_light'],  avg_data['avg_pressure'],
-            avg_data['avg_sound_level'], avg_data['avg_discomfort_index'],
-            avg_data['avg_battery'],avg_data['avg_month']
-        ))
-
-    conn.commit()
-    avg_cursor.close()
-    conn.close()
-    print(f"{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
-
-
 def api_request():
     try:
         tenki_data = requests.get(API_URL).json()
-        temp = tenki_data['forecasts'][0]["image"]["width"]
+        temp = tenki_data['forecasts'][1]['temperature']['max']['celsius']
         if temp is None:
             log_error("天気APIから気温データが取得できませんでした。")
             return 0  # デフォルト値を返す or None を返して後で処理する
@@ -156,6 +100,7 @@ def api_request():
         log_error(f"天気APIリクエスト失敗: {str(e)}")
         return 0
     
+
 def parse_format_04(data: bytes):
     if len(data) < 20:
         return None
@@ -165,47 +110,117 @@ def parse_format_04(data: bytes):
         "temperature": (int.from_bytes(data[1:3], 'little', signed=True) / 100),
         "humidity": int.from_bytes(data[3:5], 'little') / 100,
         "light": int.from_bytes(data[5:7], 'little'),
-        "uv_index": int.from_bytes(data[7:9], 'little') / 100,
         "pressure": int.from_bytes(data[9:11], 'little') / 10,
         "sound_level": int.from_bytes(data[11:13], 'little') / 100,
-        "discomfort_index": int.from_bytes(data[13:15], 'little') / 100,
-        "heatstroke_risk": int.from_bytes(data[15:17], 'little') / 100,
-        "vibration": int.from_bytes(data[17:19], 'little'),
         "battery": data[19] * 0.01
     }
 
-def insert_data_to_learning_db(data,api_data):
+def insert_data_to_sensor_table(data,device_count):
     connection = get_db_connection()
+    random_device_count=random.randint(device_count-2, device_count+2)
     cursor = connection.cursor()
     query = """
         INSERT INTO sensor_data
-        (timestamp, month,  device_count,temperature, humidity, light, uv_index, pressure, sound_level, discomfort_index, heatstroke_risk, vibration, battery)
-        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        (timestamp, room_id,temperature, humidity, pressure,light, sound_level, device_count,month, battery)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], data["month"],api_data,data["temperature"], data["humidity"], data["light"], data["uv_index"],
-        data["pressure"], data["sound_level"], data["discomfort_index"], data["heatstroke_risk"],
-        data["vibration"], data["battery"]
+        data["timestamp"], "room_001",data["temperature"], data["humidity"],
+        data["pressure"], data["light"],data["sound_level"], random_device_count,
+        data["month"], data["battery"]
     ))
     connection.commit()
     cursor.close()
     connection.close()
 
-def insert_data_to_predicted_db(data, comfort_score):
+
+def insert_comfort_data(data, comfort_score):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO predicted_data
-        (timestamp, month,  temperature, humidity, light, pressure, sound_level, comfort_index, battery)
-        VALUES (%s, %s , %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO comfort_data (timestamp, room_id, predicted_score, advice)
+        VALUES (%s, %s, %s, %s)
     """
+    advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
     cursor.execute(query, (
-        data["timestamp"], data["month"],data["temperature"], data["humidity"], data["light"], 
-        data["pressure"], data["sound_level"],  comfort_score, data["battery"]
+        data["timestamp"], "room_001", comfort_score, advice
     ))
     connection.commit()
     cursor.close()
     connection.close()
+
+def background_training():
+    """一定時間ごとに再学習"""
+    while True:
+        process_data_if_needed()
+        train_and_save_model()
+        time.sleep(UPDATE_INTERVAL)
+
+def get_capacity(room_id="room_001"):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT capacity FROM room_info WHERE room_id=%s",(room_id,))
+    capacity = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return capacity[0]if capacity else None
+
+
+
+def process_data_if_needed(room_id="room_001"):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # すべてのデータを取得
+    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC limit 15")
+
+    all_rows = cursor.fetchall()
+    print(all_rows[0])
+    cursor.close()
+    capacity=get_capacity()
+
+
+    avg_cursor = conn.cursor()
+
+    for i in range(0, len(all_rows), 3):
+        chunk = all_rows[i:i+3]
+        if len(chunk) < 3:
+            continue  # 3件未満は無視
+        avg_device_count=sum(d['battery'] for d in chunk) / 3
+
+        # 平均計算
+        avg_data = {
+            'timestamp': chunk[0]['timestamp'],  # 最初の時刻を使う
+            'avg_temperature': sum(d['temperature'] for d in chunk) / 3,
+            'avg_humidity': sum(d['humidity'] for d in chunk) / 3,
+            'avg_light': sum(d['light'] for d in chunk) // 3,
+            'avg_pressure': sum(d['pressure'] for d in chunk) / 3,
+            'avg_sound_level': sum(d['sound_level'] for d in chunk) / 3,
+            'avg_device_count':sum(d['device_count'] for d in chunk) / 3,
+            'avg_battery': sum(d['battery'] for d in chunk) / 3,
+            'score_from_avg_device_count':(avg_device_count/2.5)/capacity*100,
+            'avg_month': sum(d['month'] for d in chunk) / 3
+
+        }
+
+        # INSERT
+        avg_cursor.execute("""
+            INSERT INTO processed_sensor_data (
+                timestamp, room_id,avg_temperature, avg_humidity,   avg_pressure,avg_light,
+                avg_sound_level, avg_device_count, avg_month,score_from_avg_device_count
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s ,%s,%s)
+        """, (
+            avg_data['timestamp'], room_id,avg_data['avg_temperature'], avg_data['avg_humidity'],
+            avg_data['avg_pressure'],avg_data['avg_light'],  
+            avg_data['avg_sound_level'], avg_data['avg_device_count'],
+            avg_data['avg_month'],avg_data['score_from_avg_device_count']
+        ))
+
+    conn.commit()
+    avg_cursor.close()
+    conn.close()
+    print(f"{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
+
 
 
 # エラーをファイルとリストに記録
@@ -252,9 +267,9 @@ async def periodic_scan(interval=30):
                     api_data=int(api_request())
                     print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
                     if parsed:
-                        insert_data_to_learning_db(parsed,api_data)
+                        insert_data_to_sensor_table(parsed,api_data)
                         discomfort_score = predict_comfort_score(parsed)
-                        insert_data_to_predicted_db(parsed,discomfort_score)
+                        insert_comfort_data(parsed,discomfort_score)
                     else:
                         log_error("データフォーマットの解析に失敗しました。")
                 else:
@@ -272,7 +287,7 @@ def run_ble_loop():
 def home():
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    cursor.execute("SELECT room_name, capacity, floor FROM room_info;")  # greetingsテーブルからmessage列を取得
     rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()
@@ -284,33 +299,38 @@ def home():
 def move_register_page():
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    cursor.execute("SELECT room_name FROM room_info;")  # greetingsテーブルからmessage列を取得
     rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()
-    return render_template('register.html', rooms=rooms)  # messagesをテンプレートに渡してHTMLをレンダリング
+    return render_template('register2.html', rooms=rooms)  # messagesをテンプレートに渡してHTMLをレンダリング
 
 #部屋を登録する処理
 @app.route('/add', methods=['POST'])
 def add_message():
     # メッセージを追加する処理を行うルート（POSTリクエストを処理）
     room_name = request.form['room_name']  # フォームから送信されたメッセージを取得
+    room_id = request.form['room_id']
+    ble_address = request.form['ble_address']
+    capacity = request.form['capacity']
+    floor = request.form['floor']
+    remarks= request.form['remarks']
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("INSERT INTO greetings (message) VALUES (%s)", (room_name,))  # メッセージをgreetingsテーブルに挿入
+    cursor.execute("INSERT INTO room_info (room_id,room_name,ble_address,capacity,floor,remarks) VALUES (%s,%s,%s,%s,%s,%s)", (room_id,room_name,ble_address,capacity,floor,remarks))  # メッセージをgreetingsテーブルに挿入
     connection.commit()  # データベースに変更を反映
-    cursor.execute("SELECT message FROM greetings")  # greetingsテーブルからmessage列を取得
+    cursor.execute("SELECT room_name FROM room_info")  # greetingsテーブルからmessage列を取得
     rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()  # データベース接続を閉じる
-    return render_template("register.html",rooms=rooms)
+    return render_template("register2.html",rooms=rooms)
 
 #bleセンサーの記録を見る
 @app.route("/look", methods=["POST"])
 def move_display_page():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM predicted_data ORDER BY timestamp DESC LIMIT 1")
+    cursor.execute("SELECT * FROM comfort_data ORDER BY timestamp DESC LIMIT 1")
     predicted_data = cursor.fetchone()
     cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
     latest_data = cursor.fetchall()
@@ -319,7 +339,7 @@ def move_display_page():
     data_count = cursor.fetchone()["cnt"]
     cursor.close()
     connection.close()
-    return render_template('display.html', predicted_data=predicted_data,latest_data=latest_data,data_count=data_count)
+    return render_template('display2.html', predicted_data=predicted_data,latest_data=latest_data,data_count=data_count)
 
 
 

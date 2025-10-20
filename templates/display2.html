@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>センサーデータ表示</title>
+</head>
+<body>
+    <h1>最新のセンサーデータと予測快適指数</h1>
+    <p>データ総件数: {{ data_count }}</p>
+    <table border="1">
+        <tr><th>温度</th><td>{{ latest_data[0].temperature }}</td></tr>
+        <tr><th>湿度</th><td>{{ latest_data[0].humidity }}</td></tr>
+        <tr><th>照度</th><td>{{ latest_data[0].light }}</td></tr>
+        <tr><th>気圧</th><td>{{ latest_data[0].pressure }}</td></tr>
+        <tr><th>音</th><td>{{ latest_data[0].sound_level }}</td></tr>
+        <tr><th>バッテリー</th><td>{{ latest_data[0].battery }}</td></tr>
+        <tr><th>推定快適指数</th><td>{{ predicted_data.predicted_score }}</td></tr>
+    </table>
+    <h1>センサーデータログ</h1>
+    <table border="1">
+        <tr>
+            <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>気圧</th><th>音</th><th>バッテリー</th>
+        </tr>
+        {% for row in latest_data %}
+        <tr>
+            <td>{{ row.timestamp }}</td><td>{{ row.temperature }}</td><td>{{ row.humidity }}</td><td>{{ row.light }}</td>
+            <td>{{ row.pressure }}</td><td>{{ row.sound_level }}</td>
+            <td>{{ row.battery }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+
