@@ -5,9 +5,12 @@
     <title>部屋選択ページ</title>
 </head>
 <body>
-    {% for room in rooms %}
+    <h1>部屋を選択してください</h1>
+
+    {% for message in messages %}
         <form action="/look" method="POST">
-            <input type="submit" value="{{ room[0] }}">
+            <input type="hidden" name="room_id" value="{{ message[0] }}">
+            <input type="submit" value="{{ message[0] }}">
         </form>
     {% endfor %}
 
