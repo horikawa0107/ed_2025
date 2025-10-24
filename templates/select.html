@@ -80,6 +80,7 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <div class="container">
         <h1>快適指数モニター</h1>
         
@@ -106,6 +107,13 @@
             </a>
             <button class="delete-btn" onclick="alert('部屋3を削除します')">削除</button>
         </div>
+=======
+    {% for room in rooms %}
+        <form action="/look" method="POST">
+            <input type="submit" value="{{ room[0] }}">
+        </form>
+    {% endfor %}
+>>>>>>> main
 
         <a href="room_register.html" class="register-button">
             新しい部屋を登録 (管理者操作)
