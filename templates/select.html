@@ -1,18 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>部屋選択ページ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快適指数モニター | 部屋一覧</title>
+    <style>
+        /* 基本スタイル */
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        
+        /* 部屋リストアイテムのコンテナ */
+        .room-list-item {
+            background-color: white;
+            padding: 10px 20px; /* パディングを調整 */
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        /* 部屋情報と快適指数を表示するリンク部分（ナビゲーション） */
+        .room-nav-link {
+            flex-grow: 1; /* 残りのスペースを埋める */
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-right: 15px; /* 削除ボタンとの間にスペース */
+            cursor: pointer;
+        }
+        .room-nav-link:hover {
+            opacity: 0.8;
+        }
+
+        .score {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.5rem;
+        }
+
+        /* 削除ボタンのスタイル */
+        .delete-btn {
+            background-color: #dc3545; /* 赤色 */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex-shrink: 0; /* 縮まないようにする */
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* 登録ボタンのスタイル (変更なし) */
+        .register-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .register-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    {% for message in messages %}
-        <form action="/look" method="POST">
-            <input type="submit" value="{{ message[0] }}">
-        </form>
-    {% endfor %}
+    <div class="container">
+        <h1>快適指数モニター</h1>
+        
+        <div class="room-list-item">
+            <a href="sub_screen_room1.html" class="room-nav-link">
+                <span>部屋1</span>
+                <span class="score">85 😊</span>
+            </a>
+            <button class="delete-btn" onclick="alert('部屋1を削除します')">削除</button>
+        </div>
+        
+        <div class="room-list-item">
+            <a href="sub_screen_room2.html" class="room-nav-link">
+                <span>部屋2</span>
+                <span class="score">42 😟</span>
+            </a>
+            <button class="delete-btn" onclick="alert('部屋2を削除します')">削除</button>
+        </div>
+        
+        <div class="room-list-item">
+            <a href="sub_screen_room3.html" class="room-nav-link">
+                <span>部屋3</span>
+                <span class="score">78 🙂</span>
+            </a>
+            <button class="delete-btn" onclick="alert('部屋3を削除します')">削除</button>
+        </div>
 
-    <form action="/register" method="POST">
-        <input type="submit" value="部屋登録ボタン">
-    </form>
+        <a href="room_register.html" class="register-button">
+            新しい部屋を登録 (管理者操作)
+        </a>
+        
+    </div>
 </body>
 </html>

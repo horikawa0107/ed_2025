@@ -1,21 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日もお疲れ様！！</title>
+    <title>部屋登録</title>
+    <style>
+        /* スタイルは設計書に基づいてシンプルで大きめの要素を採用 */
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1rem; /* 大きめのフォント */
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px; /* 大きめの入力欄 */
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .register-btn, .back-btn {
+            flex-grow: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem; /* 大きめのボタン */
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .register-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .register-btn:hover {
+            background-color: #1e7e34;
+        }
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <h1>入力フォーム</h1>
-    <form action="/add" method="post">
-        <input type="text" name="message" placeholder="Enter your message" required>
-        <button type="submit">Add Message</button>
-    </form>
-    <h2>Messages:</h2>
-    <ul>
-        {% for message in messages %}
-        <li>{{ message[0] }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>新しい部屋を登録</h1>
+        <form action="/register_room" method="POST"> <div class="form-group">
+                <label for="room_name">部屋名</label>
+                <input type="text" id="room_name" name="room_name" required placeholder="例: 603号室" aria-label="部屋名">
+            </div>
+
+            <div class="form-group">
+                <label for="ble_address">BLEセンサーのアドレス</label>
+                <input type="text" id="ble_address" name="ble_address" required placeholder="例: AA:BB:CC:11:22:33" aria-label="BLEセンサーのアドレス">
+            </div>
+
+            <div class="form-group">
+                <label for="capacity">収容人数 (想定人数)</label>
+                <input type="number" id="capacity" name="capacity" min="1" required placeholder="例: 10" aria-label="収容人数">
+            </div>
+
+            <div class="form-group">
+                <label for="remarks">備考</label>
+                <textarea id="remarks" name="remarks" placeholder="例: 会議室、プロジェクターあり" aria-label="備考"></textarea>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="register-btn">登録</button>
+                
+                <a href="index.html" class="back-btn">部屋選択に戻る</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
