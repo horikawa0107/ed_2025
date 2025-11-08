@@ -18,11 +18,12 @@ import threading
 import random
 
 app = Flask(__name__)
-OMRON_ADDRESS = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
+OMRON_ADDRESS = "9436B381-9B68-03E3-1ED5-FC1778E015DC"
+OMRON_ADDRESS_FPR_ML = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
-UPDATE_INTERVAL = 300  # 1時間ごとに再学習
+UPDATE_INTERVAL = 3000  # 1時間ごとに再学習
 
 
 def get_db_connection():
@@ -294,36 +295,7 @@ def home():
     return render_template('select.html' ,rooms=rooms)
 
 
-#部屋の登録ページへ遷移する処理
-@app.route("/register", methods=["POST"])
-def move_register_page():
-    connection = get_db_connection()  # データベース接続を取得
-    cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("SELECT room_name FROM room_info;")  # greetingsテーブルからmessage列を取得
-    rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
-    cursor.close()  # カーソルを閉じる
-    connection.close()
-    return render_template('register2.html', rooms=rooms)  # messagesをテンプレートに渡してHTMLをレンダリング
 
-#部屋を登録する処理
-@app.route('/add', methods=['POST'])
-def add_message():
-    # メッセージを追加する処理を行うルート（POSTリクエストを処理）
-    room_name = request.form['room_name']  # フォームから送信されたメッセージを取得
-    room_id = request.form['room_id']
-    ble_address = request.form['ble_address']
-    capacity = request.form['capacity']
-    floor = request.form['floor']
-    remarks= request.form['remarks']
-    connection = get_db_connection()  # データベース接続を取得
-    cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("INSERT INTO room_info (room_id,room_name,ble_address,capacity,floor,remarks) VALUES (%s,%s,%s,%s,%s,%s)", (room_id,room_name,ble_address,capacity,floor,remarks))  # メッセージをgreetingsテーブルに挿入
-    connection.commit()  # データベースに変更を反映
-    cursor.execute("SELECT room_name FROM room_info")  # greetingsテーブルからmessage列を取得
-    rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
-    cursor.close()  # カーソルを閉じる
-    connection.close()  # データベース接続を閉じる
-    return render_template("register2.html",rooms=rooms)
 
 #bleセンサーの記録を見る
 @app.route("/look", methods=["POST"])
