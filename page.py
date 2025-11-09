@@ -1,30 +1,27 @@
 import asyncio
 from bleak import BleakScanner
 import json
+import gc
 import pandas as pd
 from datetime import datetime
 from threading import Thread
-    # APIリクエストに必要なライブラリ
+from flask import jsonify
 import requests
+import numpy as np
+from sklearn.metrics import mean_squared_error
 from flask import Flask, render_template,redirect,request
 import mysql.connector
 import os
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 import time
 import threading
 import random
 
 app = Flask(__name__)
-OMRON_ADDRESS = "9436B381-9B68-03E3-1ED5-FC1778E015DC"
-OMRON_ADDRESS_FPR_ML = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
-OMRON_MANUFACTURER_ID = 725
-ERROR_LOG_FILE = "errors.json"
-API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
-UPDATE_INTERVAL = 3000  # 1時間ごとに再学習
-
+# 🔽 ここでデータベースから取得して変数にセット
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -34,12 +31,63 @@ def get_db_connection():
         database='ed_2025'
     )
 
+# 🔽 追加: room_infoテーブルからBLEアドレスを取得する関数
+def get_ble_address_capacity_from_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT ble_address,capacity,mist_ap_address FROM room_info WHERE room_type = %s", (0,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if result:
+        return result[0],result[1],result[2]
+    else:
+        raise ValueError("基準の部屋のble_addressが見つかりません。")
+
+def get_ble_address_from_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT ble_address,id FROM room_info")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if result:
+        return result
+    else:
+        raise ValueError("他のroom_idのble_addressが見つかりません。")
+
+
+OMRON_ADDRESS_FOR_ML,CAPACITY,MIST_AP_ADDRESS = get_ble_address_capacity_from_db()
+# DBからBLEアドレスとroom_idを取得
+rows = get_ble_address_from_db()
+parsed_counts = {}  # ← omron_addressごとのカウントを保持する辞書
+
+# rows: [(ble_address, id), (ble_address, id), ...]
+OMRON_ADDRESSES = tuple([row[0] for row in rows])
+ROOM_IDS        = tuple([row[1] for row in rows])
+
+print(f"使用する学習用のOMRON BLEアドレス: {OMRON_ADDRESS_FOR_ML}")
+print(f"使用する収容人数: {CAPACITY}")
+print(f"使用するMIST AP: {MIST_AP_ADDRESS}")
+print(f"使用するサービス運用用のOMRON BLEアドレス: {OMRON_ADDRESSES}")
+print(f"使用するサービス運用用のroom_id: {ROOM_IDS}")
+
+MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl"
+OMRON_MANUFACTURER_ID = 725
+ERROR_LOG_FILE = "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/errors.json"
+API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
+UPDATE_INTERVAL = 300  # 1時間ごとに再学習
+
+
+
 # 2. MySQLからデータを読み込み（前処理済みテーブル）
 def load_data_from_mysql():
+    print("processed_sensor_data_for_mlから読み込み")
     conn = get_db_connection()
     query = """
-        SELECT avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, avg_month, score_from_avg_device_count
-        FROM processed_sensor_data;
+        SELECT avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, month, score_from_avg_device_count
+        FROM processed_sensor_data_for_ml
+        ORDER BY timestamp DESC limit 10;
     """
     df = pd.read_sql(query, conn)
     conn.close()
@@ -50,13 +98,13 @@ def train_and_save_model():
     current_time= datetime.now()
     # --- データ取得 ---
     df = load_data_from_mysql()
-    print(df)
-    if df.empty:
-        print("データがありません。学習をスキップします。")
+    print(f"processed_sensor_data_for_ml:{df}")
+    if df.empty or len(df)<10:
+        print(f"{current_time}時点でデータが足りません。学習をスキップします。")
         return
     
     # --- 特徴量と目的変数に分割 ---
-    features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'avg_month']
+    features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'month']
     X = df[features]
     y = df['score_from_avg_device_count']
     
@@ -65,14 +113,27 @@ def train_and_save_model():
     
     model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
     model.fit(X_train, y_train)
-    
-    joblib.dump(model, f"/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model.pkl")
 
-    print("モデルを更新しました")
+    # --- モデルの評価 ---
+    y_pred = model.predict(X_test)
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse=mean_squared_error(y_test, y_pred)
+
+
+    print("\n=== モデル評価結果 ===")
+    print(f"R²スコア       : {r2:.4f}")
+    print(f"平均絶対誤差 (MAE): {mae:.4f}")
+    print(f"MSE (平方二乗誤差): {mse:.4f}")
+    print("=====================\n")
+    
+    joblib.dump(model, MODEL_PATH)
+
+    print("✅ モデルを更新しました")
 
 def predict_comfort_score(sensor_data):
     try:
-        model = joblib.load("/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model.pkl")
+        model = joblib.load(MODEL_PATH)
         current_month = datetime.now().month  
         new_data = pd.DataFrame([{
             'avg_temperature': sensor_data["temperature"],
@@ -80,7 +141,7 @@ def predict_comfort_score(sensor_data):
             'avg_light': sensor_data["light"],
             'avg_pressure': sensor_data["pressure"],
             'avg_sound_level': sensor_data["sound_level"],
-            'avg_month': current_month
+            'month': sensor_data["month"]
         }])
         prediction = model.predict(new_data)
         return float(prediction[0])
@@ -116,17 +177,17 @@ def parse_format_04(data: bytes):
         "battery": data[19] * 0.01
     }
 
-def insert_data_to_sensor_table(data,device_count):
+def insert_data_to_sensor_data_for_ml_table(data,device_count,i):
     connection = get_db_connection()
     random_device_count=random.randint(device_count-2, device_count+2)
     cursor = connection.cursor()
     query = """
-        INSERT INTO sensor_data
+        INSERT INTO sensor_data_for_ml
         (timestamp, room_id,temperature, humidity, pressure,light, sound_level, device_count,month, battery)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], "room_001",data["temperature"], data["humidity"],
+        data["timestamp"], i,data["temperature"], data["humidity"],
         data["pressure"], data["light"],data["sound_level"], random_device_count,
         data["month"], data["battery"]
     ))
@@ -134,17 +195,34 @@ def insert_data_to_sensor_table(data,device_count):
     cursor.close()
     connection.close()
 
-
-def insert_comfort_data(data, comfort_score):
+def insert_data_to_sensor_data_table(data,i):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO comfort_data (timestamp, room_id, predicted_score, advice)
+        INSERT INTO sensor_data
+        (timestamp, room_id,temperature, humidity, pressure,light, sound_level, month, battery)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (
+        data["timestamp"], i,data["temperature"], data["humidity"],
+        data["pressure"], data["light"],data["sound_level"],
+        data["month"], data["battery"]
+    ))
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def insert_comfort_data(data, comfort_score,i):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    query = """
+        INSERT INTO comfort_data (timestamp, room_id, score, advice)
         VALUES (%s, %s, %s, %s)
     """
+    print(f"快適指数:{comfort_score}")
     advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
     cursor.execute(query, (
-        data["timestamp"], "room_001", comfort_score, advice
+        data["timestamp"], i, comfort_score, advice
     ))
     connection.commit()
     cursor.close()
@@ -153,75 +231,144 @@ def insert_comfort_data(data, comfort_score):
 def background_training():
     """一定時間ごとに再学習"""
     while True:
-        process_data_if_needed()
+        print("\n=== 自動メンテナンス開始 ===")
+        cleanup_old_sensor_data()
         train_and_save_model()
+        gc.collect()
+        print("=== メンテナンス完了 ===\n")
         time.sleep(UPDATE_INTERVAL)
 
-def get_capacity(room_id="room_001"):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute("SELECT capacity FROM room_info WHERE room_id=%s",(room_id,))
-    capacity = cursor.fetchone()
-    cursor.close()
-    connection.close()
-    return capacity[0]if capacity else None
 
 
 
-def process_data_if_needed(room_id="room_001"):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
 
-    # すべてのデータを取得
-    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC limit 15")
+def process_sensor_data(omron_address, room_id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
 
-    all_rows = cursor.fetchall()
-    print(all_rows[0])
-    cursor.close()
-    capacity=get_capacity()
+        # 最新3件のデータ取得
+        cursor.execute("SELECT * FROM sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 3;", (room_id,))
+        all_rows = cursor.fetchall()
+        cursor.close()
+
+        # データが3件未満ならスキップ
+        if len(all_rows) < 3:
+            log_error(f"{omron_address} のデータが3件未満のため、平均計算をスキップしました。({len(all_rows)}件)")
+            return
+
+        print(all_rows[0])
 
 
-    avg_cursor = conn.cursor()
-
-    for i in range(0, len(all_rows), 3):
-        chunk = all_rows[i:i+3]
-        if len(chunk) < 3:
-            continue  # 3件未満は無視
-        avg_device_count=sum(d['battery'] for d in chunk) / 3
-
-        # 平均計算
+        # 平均値を算出
         avg_data = {
-            'timestamp': chunk[0]['timestamp'],  # 最初の時刻を使う
-            'avg_temperature': sum(d['temperature'] for d in chunk) / 3,
-            'avg_humidity': sum(d['humidity'] for d in chunk) / 3,
-            'avg_light': sum(d['light'] for d in chunk) // 3,
-            'avg_pressure': sum(d['pressure'] for d in chunk) / 3,
-            'avg_sound_level': sum(d['sound_level'] for d in chunk) / 3,
-            'avg_device_count':sum(d['device_count'] for d in chunk) / 3,
-            'avg_battery': sum(d['battery'] for d in chunk) / 3,
-            'score_from_avg_device_count':(avg_device_count/2.5)/capacity*100,
-            'avg_month': sum(d['month'] for d in chunk) / 3
-
+            'timestamp': all_rows[0]['timestamp'],  # 最新の時刻を使用
+            'avg_temperature': sum(d['temperature'] for d in all_rows) / 3,
+            'avg_humidity': sum(d['humidity'] for d in all_rows) / 3,
+            'avg_light': sum(d['light'] for d in all_rows) / 3,
+            'avg_pressure': sum(d['pressure'] for d in all_rows) / 3,
+            'avg_sound_level': sum(d['sound_level'] for d in all_rows) / 3,
+            'battery': all_rows[0]['battery'],
+            'month': all_rows[0]['month'],
         }
 
-        # INSERT
+        avg_cursor = conn.cursor()
         avg_cursor.execute("""
             INSERT INTO processed_sensor_data (
+                timestamp, room_id, avg_temperature, avg_humidity, avg_pressure, avg_light,
+                avg_sound_level, month, battery
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            avg_data['timestamp'], room_id,
+            avg_data['avg_temperature'], avg_data['avg_humidity'],
+            avg_data['avg_pressure'], avg_data['avg_light'],
+            avg_data['avg_sound_level'],
+            avg_data['month'], avg_data['battery']
+        ))
+
+        conn.commit()
+        avg_cursor.close()
+        conn.close()
+
+        print(f"✅ {omron_address} の {avg_data['timestamp']} 区間平均を計算・保存しました。")
+
+    except Exception as e:
+        # --- エラー内容をログ出力 ---
+        log_error(f"process_sensor_data中にエラー発生({omron_address}): {str(e)}")
+
+        # DBを安全にクローズ（もし開いていたら）
+        try:
+            if 'cursor' in locals() and cursor:
+                cursor.close()
+            if 'avg_cursor' in locals() and avg_cursor:
+                avg_cursor.close()
+            if 'conn' in locals() and conn:
+                conn.close()
+        except:
+            pass
+
+
+def process_sensor_data_for_ml(omron_address,room_id):
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+    
+        # すべてのデータを取得
+        cursor.execute("SELECT * FROM sensor_data_for_ml ORDER BY timestamp DESC limit 3;")
+        all_rows = cursor.fetchall()
+        print(all_rows[0])
+        cursor.close()
+        
+        avg_cursor = conn.cursor()
+    
+         # 3件未満は無視
+        avg_device_count=sum(d['device_count'] for d in all_rows) / 3
+        # 平均計算
+        avg_data = {
+            'timestamp': all_rows[0]['timestamp'],  # 最初の時刻を使う
+            'avg_temperature': sum(d['temperature'] for d in all_rows) / 3,
+            'avg_humidity': sum(d['humidity'] for d in all_rows) / 3,
+            'avg_light': sum(d['light'] for d in all_rows) / 3,
+            'avg_pressure': sum(d['pressure'] for d in all_rows) / 3,
+            'avg_sound_level': sum(d['sound_level'] for d in all_rows) / 3,
+            'avg_device_count':sum(d['device_count'] for d in all_rows) / 3,
+            'battery': all_rows[0]['battery'],
+            'month':all_rows[0]['month'],
+            'score_from_avg_device_count':min((avg_device_count/2.5)/CAPACITY*100,100),
+        }
+        # INSERT
+        avg_cursor.execute("""
+            INSERT INTO processed_sensor_data_for_ml (
                 timestamp, room_id,avg_temperature, avg_humidity,   avg_pressure,avg_light,
-                avg_sound_level, avg_device_count, avg_month,score_from_avg_device_count
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s ,%s,%s)
+                avg_sound_level, avg_device_count, month,battery,score_from_avg_device_count
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s ,%s,%s,%s)
         """, (
             avg_data['timestamp'], room_id,avg_data['avg_temperature'], avg_data['avg_humidity'],
             avg_data['avg_pressure'],avg_data['avg_light'],  
             avg_data['avg_sound_level'], avg_data['avg_device_count'],
-            avg_data['avg_month'],avg_data['score_from_avg_device_count']
+            avg_data['month'],avg_data['battery'],avg_data['score_from_avg_device_count']
         ))
+        conn.commit()
+        avg_cursor.close()
+        conn.close()
+        print(f"sensor_data_for_mlの{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
+    
 
-    conn.commit()
-    avg_cursor.close()
-    conn.close()
-    print(f"{avg_data['timestamp']}区間平均の計算と保存が完了しました。")
+    except Exception as e:
+        # --- エラー内容をログ出力 ---
+        log_error(f"process_sensor_data_for_ml中にエラー発生({omron_address}): {str(e)}")
 
+        # DBを安全にクローズ（もし開いていたら）
+        try:
+            if 'cursor' in locals() and cursor:
+                cursor.close()
+            if 'avg_cursor' in locals() and avg_cursor:
+                avg_cursor.close()
+            if 'conn' in locals() and conn:
+                conn.close()
+        except:
+            pass   
 
 
 # エラーをファイルとリストに記録
@@ -249,50 +396,113 @@ def log_error(message):
         json.dump(logs, f, ensure_ascii=False, indent=2)
 
 # BLEスキャン処理
-async def periodic_scan(interval=30):
+parsed_counts = {}  # ← omron_addressごとのカウントを保持する辞書
+
+async def periodic_scan(omron_addresses, interval=60):
     while True:
         try:
-            scanner = BleakScanner()
-            await scanner.start()
-            await asyncio.sleep(20.0)
-            await scanner.stop()
-            devices_info = scanner.discovered_devices_and_advertisement_data
+            for i, omron_address in enumerate(OMRON_ADDRESSES, start=1):
+                print(f"📡{omron_address}をスキャン中..")
+                scanner = BleakScanner()
+                await scanner.start()
+                await asyncio.sleep(20.0)
+                await scanner.stop()
+                devices_info = scanner.discovered_devices_and_advertisement_data
+                
 
-            if OMRON_ADDRESS not in devices_info:
-                log_error("デバイスが見つかりません。")
-            else:
-                adv_data = devices_info[OMRON_ADDRESS][1]
+                if omron_address not in devices_info:
+                    log_error("デバイスが見つかりません。")
+                    continue
+
+                
+                adv_data = devices_info[omron_address][1]
                 raw_data = adv_data.manufacturer_data.get(OMRON_MANUFACTURER_ID)
-                if raw_data:
-                    parsed = parse_format_04(raw_data)
-                    api_data=int(api_request())
-                    print(f"[SUCCESS] データ取得成功: {parsed}")  # ← 成功時はprintに変更
-                    if parsed:
-                        insert_data_to_sensor_table(parsed,api_data)
-                        discomfort_score = predict_comfort_score(parsed)
-                        insert_comfort_data(parsed,discomfort_score)
-                    else:
-                        log_error("データフォーマットの解析に失敗しました。")
-                else:
+                
+                if not raw_data:
                     log_error("Manufacturer data が見つかりません。")
+                    continue
+
+                parsed = parse_format_04(raw_data)
+                if not parsed:
+                    log_error("データフォーマットの解析に失敗しました。")
+                    continue
+
+                # === データ取得成功 ===
+                print(f"[SUCCESS] データ取得成功({omron_address}): {parsed}")
+
+                # --- データ挿入と処理 ---
+                if omron_address == OMRON_ADDRESS_FOR_ML:
+                    api_data = int(api_request())
+                    insert_data_to_sensor_data_for_ml_table(parsed, api_data, i)
+                else:
+                    insert_data_to_sensor_data_table(parsed, i)
+                    comfort_score = predict_comfort_score(parsed)
+                    if comfort_score:
+                        insert_comfort_data(parsed, comfort_score, i)
+                    else:
+                        print("モデルがまだ作成されていません。もう少々お待ちください。")
+
+                # === カウント管理 ===
+                parsed_counts[omron_address] = parsed_counts.get(omron_address, 0) + 1
+
+                # 3回取得ごとに test() 実行
+                if parsed_counts[omron_address] % 3 == 0:
+                    print(f"✅ {omron_address}で3回データ取得完了")
+                    if omron_address==OMRON_ADDRESS_FOR_ML:
+                        print("process_sensor_data_for_ml")
+                        process_sensor_data_for_ml(omron_address,i)
+                    else:
+                        print("process_sensor_data")
+                        process_sensor_data(omron_address,i)
+                    
         except Exception as e:
             log_error(f"スキャン中に例外発生: {str(e)}")
 
         await asyncio.sleep(interval)
 
+
+def cleanup_old_sensor_data():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        tables = [
+            "sensor_data",
+            "sensor_data_for_ml",
+            "processed_sensor_data",
+            "processed_sensor_data_for_ml",
+            "comfort_data"
+        ]
+
+        for table in tables:
+            delete_query = f"""
+                DELETE FROM {table}
+                WHERE timestamp < NOW() - INTERVAL 1 MONTH;
+            """
+            cursor.execute(delete_query)
+            print(f"🧹 {table}: 古いデータを削除しました ({cursor.rowcount} 件)")
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("✅ 1ヶ月以上前のセンサーデータ削除完了")
+
+    except Exception as e:
+        print(f"[ERROR] 自動削除中にエラー発生: {e}")
+
 def run_ble_loop():
-    asyncio.run(periodic_scan())
+    asyncio.run(periodic_scan(OMRON_ADDRESSES))
 
 
 @app.route('/')
 def home():
     connection = get_db_connection()  # データベース接続を取得
     cursor = connection.cursor()  # クエリを実行するためのカーソルを取得
-    cursor.execute("SELECT room_name, capacity, floor FROM room_info;")  # greetingsテーブルからmessage列を取得
+    cursor.execute("SELECT id,room_name FROM room_info WHERE room_type = 1;")  # greetingsテーブルからmessage列を取得
     rooms = cursor.fetchall()  # 取得したメッセージをすべてリストで取得
     cursor.close()  # カーソルを閉じる
     connection.close()
-    return render_template('select.html' ,rooms=rooms)
+    return render_template('select2.html' ,rooms=rooms)
 
 
 
@@ -300,21 +510,85 @@ def home():
 #bleセンサーの記録を見る
 @app.route("/look", methods=["POST"])
 def move_display_page():
+    room_id = request.form.get("room_id")
+    room_name = request.form.get("room_name")
+    print("受け取った room_id:", room_id)
+    print("受け取った room_name:", room_name)
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM comfort_data ORDER BY timestamp DESC LIMIT 1")
+    cursor.execute(
+        "SELECT * FROM comfort_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
+        (room_id,)
+    )
     predicted_data = cursor.fetchone()
-    cursor.execute("SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 10")
-    latest_data = cursor.fetchall()
+    cursor.execute(
+        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
+        (room_id,)
+    )
+    latest_data = cursor.fetchone()
+    cursor.execute(
+        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 10",
+        (room_id,)
+    )    
+    datas_for_log = cursor.fetchall()
      # データ件数を取得
-    cursor.execute("SELECT COUNT(*) AS cnt FROM sensor_data")
+    cursor.execute(
+        "SELECT COUNT(*) AS cnt FROM processed_sensor_data WHERE room_id = %s",
+        (room_id,)
+    )
     data_count = cursor.fetchone()["cnt"]
     cursor.close()
     connection.close()
-    return render_template('display2.html', predicted_data=predicted_data,latest_data=latest_data,data_count=data_count)
+    return render_template('display2.html', 
+                           room_id=room_id,
+                           room_name=room_name,
+                           predicted_data=predicted_data,
+                           latest_data=latest_data,
+                           datas_for_log=datas_for_log,
+                           data_count=data_count)
 
 
 
+@app.route("/api/latest/<int:room_id>")
+def get_latest_data(room_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # 最新データ
+    cursor.execute(
+        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
+        (room_id,)
+    )
+    latest_data = cursor.fetchone()
+
+    # 最新の快適指数
+    cursor.execute(
+        "SELECT * FROM comfort_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
+        (room_id,)
+    )
+    predicted_data = cursor.fetchone()
+
+    # データ件数
+    cursor.execute(
+        "SELECT COUNT(*) AS cnt FROM processed_sensor_data WHERE room_id = %s",
+        (room_id,)
+    )
+    data_count = cursor.fetchone()["cnt"]
+    # 最新10件のログ
+    cursor.execute(
+        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 10",
+        (room_id,)
+    )
+    datas_for_log = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
+    return jsonify({
+        "latest_data": latest_data,
+        "predicted_data": predicted_data,
+        "data_count": data_count,
+        "datas_for_log":datas_for_log
+    })
 
 @app.route('/errors')
 def show_errors():

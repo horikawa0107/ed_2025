@@ -2,35 +2,83 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>センサーデータ表示</title>
+    <title>センサーデータ表示{{room_id}}</title>
 </head>
 <body>
-    <h1>最新のセンサーデータと予測快適指数</h1>
-    <p>データ総件数: {{ data_count }}</p>
-    <table border="1">
-        <tr><th>温度</th><td>{{ latest_data[0].temperature }}</td></tr>
-        <tr><th>湿度</th><td>{{ latest_data[0].humidity }}</td></tr>
-        <tr><th>照度</th><td>{{ latest_data[0].light }}</td></tr>
-        <tr><th>気圧</th><td>{{ latest_data[0].pressure }}</td></tr>
-        <tr><th>音</th><td>{{ latest_data[0].sound_level }}</td></tr>
-        <tr><th>バッテリー</th><td>{{ latest_data[0].battery }}</td></tr>
-        <tr><th>推定快適指数</th><td>{{ predicted_data.predicted_score }}</td></tr>
-        <tr><th>時刻</th><td>{{ latest_data[0].timestamp }}</td></tr>
-    </table>
+    <h1>最新のセンサーデータと予測快適指数：{{room_name}}</h1>
+    <p>データ総件数: <span id="count">{{ data_count }}</span></p>
+<table border="1">
+    <tr><th>温度</th><td id="temp">{{ latest_data.avg_temperature }}</td></tr>
+    <tr><th>湿度</th><td id="hum">{{ latest_data.avg_humidity }}</td></tr>
+    <tr><th>照度</th><td id="light">{{ latest_data.avg_light }}</td></tr>
+    <tr><th>気圧</th><td id="pres">{{ latest_data.avg_pressure }}</td></tr>
+    <tr><th>音</th><td id="sound">{{ latest_data.avg_sound_level }}</td></tr>
+    <tr><th>バッテリー</th><td id="batt">{{ latest_data.battery }}</td></tr>
+    <tr><th>推定快適指数</th><td id="comfort">{{ predicted_data.score }}</td></tr>
+    <tr><th>時刻</th><td id="time">{{ latest_data.timestamp }}</td></tr>
+</table>
     <h1>センサーデータログ</h1>
-    <table border="1">
+<table border="1">
+    <tr>
+        <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>気圧</th><th>音</th><th>バッテリー</th>
+    </tr>
+    <tbody id="log-table-body">
+        {% for data_for_log in datas_for_log %}
         <tr>
-            <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>気圧</th><th>音</th><th>バッテリー</th>
-        </tr>
-        {% for row in latest_data %}
-        <tr>
-            <td>{{ row.timestamp }}</td><td>{{ row.temperature }}</td><td>{{ row.humidity }}</td><td>{{ row.light }}</td>
-            <td>{{ row.pressure }}</td><td>{{ row.sound_level }}</td>
-            <td>{{ row.battery }}</td>
+            <td>{{ data_for_log.timestamp }}</td>
+            <td>{{ data_for_log.avg_temperature }}</td>
+            <td>{{ data_for_log.avg_humidity }}</td>
+            <td>{{ data_for_log.avg_light }}</td>
+            <td>{{ data_for_log.avg_pressure }}</td>
+            <td>{{ data_for_log.avg_sound_level }}</td>
+            <td>{{ data_for_log.battery }}</td>
         </tr>
         {% endfor %}
-    </table>
+    </tbody>
+</table>
 </body>
 </html>
 
+<script>
+const roomId = "{{ room_id }}";
+
+async function fetchLatestData() {
+    const response = await fetch(`/api/latest/${roomId}`);
+    const data = await response.json();
+
+    // 最新データをHTMLに反映
+    document.querySelector("#temp").textContent = data.latest_data.avg_temperature;
+    document.querySelector("#hum").textContent = data.latest_data.avg_humidity;
+    document.querySelector("#light").textContent = data.latest_data.avg_light;
+    document.querySelector("#pres").textContent = data.latest_data.avg_pressure;
+    document.querySelector("#sound").textContent = data.latest_data.avg_sound_level;
+    document.querySelector("#batt").textContent = data.latest_data.battery;
+    document.querySelector("#comfort").textContent = data.predicted_data.score;
+    document.querySelector("#time").textContent = data.latest_data.timestamp;
+    document.querySelector("#count").textContent = data.data_count;
+
+    // === ログテーブルを再描画 ===
+    const logTable = document.querySelector("#log-table-body");
+    logTable.innerHTML = ""; // 一旦クリア
+
+    data.datas_for_log.forEach(log => {
+        const row = `
+            <tr>
+                <td>${log.timestamp}</td>
+                <td>${log.avg_temperature}</td>
+                <td>${log.avg_humidity}</td>
+                <td>${log.avg_light}</td>
+                <td>${log.avg_pressure}</td>
+                <td>${log.avg_sound_level}</td>
+                <td>${log.battery}</td>
+            </tr>
+        `;
+        logTable.innerHTML += row;
+    });
+
+}
+
+// 5秒ごとに更新
+setInterval(fetchLatestData, 10000);
+</script>
 
