@@ -6,16 +6,13 @@
 </head>
 <body>
     <h1>部屋を選択してください</h1>
-
-    {% for message in messages %}
+    
+    {% for room in rooms %}
         <form action="/look" method="POST">
-            <input type="hidden" name="room_id" value="{{ message[0] }}">
-            <input type="submit" value="{{ message[0] }}">
+            <input type="hidden" name="room_id" value="{{ room[0] }}">
+            <input type="hidden" name="room_name" value="{{ room[1] }}">
+            <input type="submit" value="{{ room[1] }}">
         </form>
     {% endfor %}
-
-    <form action="/register" method="POST">
-        <input type="submit" value="部屋登録ボタン">
-    </form>
 </body>
 </html>
