@@ -15,8 +15,6 @@ import mysql.connector
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from sklearn.ensemble import RandomForestRegressor
-import joblib
 import time
 import threading
 import random
@@ -77,6 +75,16 @@ MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfor
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
+#------------MIST API------------
+API_TOKEN = "ycQduGG1tfVDuCYRdQDbMPoO2qU66UdD8e2xmIeWSHXQ81ZZxSzHYD5w85vCcKiDbL6lWTbwT124q9EnGTlO6fay6X08KF0w"
+# ORG_ID = "14e64971-8492-40c9-9b5f-c169ea5c6903"
+ORG_ID = "0ec9ad75-1ae0-40b3-bbd8-63ac91775547"
+# SITE_ID = "b9b7b9d1-4823-465c-9bcf-14a0659003c6"
+SITE_ID="22968ecf-ae7b-4d84-8100-670bb522267b"
+# AP_ID = "00000000-0000-0000-1000-5c5b353ecdc3"
+AP_ID = "00000000-0000-0000-1000-5c5b353ecdd7"
+
+#---------------------------------
 UPDATE_INTERVAL = 300  # 1時間ごとに再学習
 
 
@@ -209,6 +217,46 @@ def api_request():
         log_error(f"天気APIリクエスト失敗: {str(e)}")
         return 0
     
+
+def count_long_connected_devices(api_token: str,
+                                  site_id: str, 
+                                  ap_id: str, 
+                                  threshold_minutes: int = 1) -> int:
+    """
+    特定のAPに接続しているデバイスのうち、uptimeが指定時間以上のデバイス数を返す関数。
+
+    Parameters:
+        api_token (str): MIST APIトークン
+        site_id (str): サイトID
+        ap_id (str): APのID
+        threshold_minutes (int): uptimeの閾値（分単位、デフォルト30分）
+
+    Returns:
+        int: uptimeが閾値以上のデバイス数
+    """
+    # url = f"https://api.ac2.mist.com/api/v1/sites/{site_id}/stats/clients"
+    url = f"https://mist-api-wrapper.onrender.com/api/v1/sites/{site_id}/stats/clients"
+
+    headers = {
+        "Authorization": f"Token {api_token}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print(f"Error {response.status_code}: {response.text}")
+        return 0
+
+    clients = response.json()
+
+    # uptimeがthreshold_minutes分以上のデバイスをカウント
+    threshold_seconds = threshold_minutes * 60
+    long_connected_devices = [
+        c for c in clients
+        if c.get("ap_id") == ap_id and c.get("uptime", 0) >= threshold_seconds
+    ]
+
+    return len(long_connected_devices)
 
 def parse_format_04(data: bytes):
     if len(data) < 20:
@@ -479,7 +527,13 @@ async def periodic_scan(omron_addresses, interval=60):
 
                 # --- データ挿入と処理 ---
                 if omron_address == OMRON_ADDRESS_FOR_ML:
-                    api_data = int(api_request())
+                    try:
+                        api_data= count_long_connected_devices(API_TOKEN, SITE_ID, AP_ID)
+                        print(f"1分以上接続しているデバイス数: {api_data}")
+                    except Exception as e:
+                        print(f"エラー：{e}")
+                        api_data = int(api_request())
+
                     insert_data_to_sensor_data_for_ml_table(parsed, api_data, i)
                 else:
                     insert_data_to_sensor_data_table(parsed, i)
