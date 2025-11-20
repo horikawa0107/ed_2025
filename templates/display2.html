@@ -2,25 +2,51 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>センサーデータ表示{{room_id}}</title>
+    <title>センサーデータ表示{{room_name}}</title>
+    <style>
+        .header {
+            background-color: #87cefa; /* 青 */
+            color: black;
+            padding: 60px;
+        }
+    </style>
 </head>
 <body>
-    <h1>最新のセンサーデータと予測快適指数：{{room_name}}</h1>
+    <h1 style="text-align:center" class="header">快適指数モニター：{{room_name}}</h1>
     <p>データ総件数: <span id="count">{{ data_count }}</span></p>
+    <p>現在の予測快適指数: <span id="comfort">{{ predicted_data.score }}</span></p>
 <table border="1">
+    <tr><th>日時</th><td id="time">{{ latest_data.timestamp }}</td></tr>
     <tr><th>温度</th><td id="temp">{{ latest_data.avg_temperature }}</td></tr>
     <tr><th>湿度</th><td id="hum">{{ latest_data.avg_humidity }}</td></tr>
     <tr><th>照度</th><td id="light">{{ latest_data.avg_light }}</td></tr>
     <tr><th>気圧</th><td id="pres">{{ latest_data.avg_pressure }}</td></tr>
-    <tr><th>音</th><td id="sound">{{ latest_data.avg_sound_level }}</td></tr>
+    <tr><th>騒音度</th><td id="sound">{{ latest_data.avg_sound_level }}</td></tr>
     <tr><th>バッテリー</th><td id="batt">{{ latest_data.battery }}</td></tr>
-    <tr><th>推定快適指数</th><td id="comfort">{{ predicted_data.score }}</td></tr>
-    <tr><th>時刻</th><td id="time">{{ latest_data.timestamp }}</td></tr>
+    <!-- <tr><th>推定快適指数</th><td id="comfort">{{ predicted_data.score }}</td></tr> -->
 </table>
-    <h1>センサーデータログ</h1>
+    <p>アドバイス: <span id="advice">{{ predicted_data.advice }}</span></p>
+<div>
+        <button onclick="window.location.href='/'"
+                style="
+                    padding: 12px 25px;
+                    font-size: 18px;
+                    margin: 20px 0;
+                    border-radius: 8px;
+                    background-color: #dcdcdc;
+                    color: black;
+                    border: none;
+                    cursor: pointer;
+                ">
+            ← 部屋一覧に戻る
+        </button>
+    </div>
+
+
+    <h2>センサーデータログ</h2>
 <table border="1">
     <tr>
-        <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>気圧</th><th>音</th><th>バッテリー</th>
+        <th>日時</th><th>温度</th><th>湿度</th><th>照度</th><th>気圧</th><th>騒音度</th><th>バッテリー</th>
     </tr>
     <tbody id="log-table-body">
         {% for data_for_log in datas_for_log %}
@@ -42,6 +68,20 @@
 <script>
 const roomId = "{{ room_id }}";
 
+
+function formatTimestamp(ts) {
+    const d = new Date(ts);
+
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    const ss = String(d.getSeconds()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+}
+
 async function fetchLatestData() {
     const response = await fetch(`/api/latest/${roomId}`);
     const data = await response.json();
@@ -54,8 +94,11 @@ async function fetchLatestData() {
     document.querySelector("#sound").textContent = data.latest_data.avg_sound_level;
     document.querySelector("#batt").textContent = data.latest_data.battery;
     document.querySelector("#comfort").textContent = data.predicted_data.score;
-    document.querySelector("#time").textContent = data.latest_data.timestamp;
+    document.querySelector("#advice").textContent = data.predicted_data.advice;
     document.querySelector("#count").textContent = data.data_count;
+
+    document.querySelector("#time").textContent =
+        formatTimestamp(data.latest_data.timestamp);
 
     // === ログテーブルを再描画 ===
     const logTable = document.querySelector("#log-table-body");
@@ -64,7 +107,7 @@ async function fetchLatestData() {
     data.datas_for_log.forEach(log => {
         const row = `
             <tr>
-                <td>${log.timestamp}</td>
+                <td>${formatTimestamp(log.timestamp)}</td>
                 <td>${log.avg_temperature}</td>
                 <td>${log.avg_humidity}</td>
                 <td>${log.avg_light}</td>
