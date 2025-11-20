@@ -2242,5 +2242,1253 @@
   {
     "timestamp": "2025-10-09 23:10:46",
     "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-17 09:09:28",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-17 09:10:20",
+    "error": "スキャン中に例外発生: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (61)"
+  },
+  {
+    "timestamp": "2025-10-17 09:12:36",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-17 09:13:51",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-17 09:16:27",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-17 09:17:17",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:10:48",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:11:38",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:12:28",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:15:50",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:17:30",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:20:01",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:23:23",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:24:13",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:30:09",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:30:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:33:30",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:35:11",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:38:26",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:39:16",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 13:41:47",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:05:18",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:06:08",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:06:59",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:07:49",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:08:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:09:29",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:10:20",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:11:10",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:12:00",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:12:51",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:13:41",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:14:31",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`room_id`) ON DELETE SET NULL ON UPDATE CASCADE)"
+  },
+  {
+    "timestamp": "2025-10-20 15:15:28",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:19:40",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:23:01",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:30:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:38:43",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:40:24",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:43:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 15:52:08",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 17:27:18",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 17:28:08",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 17:30:50",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 17:31:41",
+    "error": "スキャン中に例外発生: Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-10-20 17:32:48",
+    "error": "スキャン中に例外発生: Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-10-20 17:33:38",
+    "error": "スキャン中に例外発生: Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-10-20 17:34:38",
+    "error": "スキャン中に例外発生: Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-10-20 17:35:28",
+    "error": "スキャン中に例外発生: Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-10-20 17:36:18",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 17:51:44",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 18:08:55",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 18:09:45",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:11:49",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:12:40",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:14:43",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:15:33",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:16:24",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:17:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 18:17:46",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:18:36",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:20:07",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-20 18:21:36",
+    "error": "天気APIから気温データが取得できませんでした。"
+  },
+  {
+    "timestamp": "2025-10-20 18:23:22",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:15:27",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:18:50",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:23:01",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:23:52",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:25:32",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:27:12",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:29:43",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:33:05",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:34:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:40:38",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:42:18",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:43:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:45:40",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:46:30",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:47:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:48:10",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:50:41",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:52:21",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:53:11",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:58:13",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 09:59:03",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:02:25",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:03:15",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:05:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:07:26",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:09:06",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:10:46",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:11:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:19:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:22:33",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:23:23",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:24:13",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:33:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:40:46",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-10-24 10:43:21",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:33:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:34:04",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:34:54",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:35:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:36:35",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:37:25",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:38:15",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:39:05",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:39:55",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:40:45",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:41:35",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 11:42:25",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 15:27:18",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 15:28:08",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 15:28:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 15:29:49",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 15:30:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 19:04:26",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`id`) ON DELETE CASCADE)"
+  },
+  {
+    "timestamp": "2025-11-08 19:05:16",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`id`) ON DELETE CASCADE)"
+  },
+  {
+    "timestamp": "2025-11-08 19:06:06",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`id`) ON DELETE CASCADE)"
+  },
+  {
+    "timestamp": "2025-11-08 19:07:53",
+    "error": "スキャン中に例外発生: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ed_2025`.`sensor_data`, CONSTRAINT `sensor_data_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_info` (`id`) ON DELETE CASCADE)"
+  },
+  {
+    "timestamp": "2025-11-08 19:14:57",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 19:15:48",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 19:16:38",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 19:17:28",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:17:28",
+    "error": "スキャン中に例外発生: '>' not supported between instances of 'NoneType' and 'float'"
+  },
+  {
+    "timestamp": "2025-11-08 19:18:18",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:18:18",
+    "error": "スキャン中に例外発生: '>' not supported between instances of 'NoneType' and 'float'"
+  },
+  {
+    "timestamp": "2025-11-08 19:19:08",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:19:08",
+    "error": "スキャン中に例外発生: '>' not supported between instances of 'NoneType' and 'float'"
+  },
+  {
+    "timestamp": "2025-11-08 19:24:21",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:25:11",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:26:01",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:26:51",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:27:41",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 19:28:31",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:29:21",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:29:52",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:35:32",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 19:36:23",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:23:53",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:24:13",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 20:25:03",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:32:19",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:33:30",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:34:40",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:35:51",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:37:01",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:41:50",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:43:01",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:44:11",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:45:22",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:46:15",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:47:43",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:48:54",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 20:50:05",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 21:32:15",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 21:32:35",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 21:33:55",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 21:34:15",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 21:35:35",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 21:35:56",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 21:37:36",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 21:37:36",
+    "error": "スキャン中に例外発生: 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 21:39:17",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 21:40:37",
+    "error": "スキャン中に例外発生: unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 22:01:50",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 22:02:10",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:03:51",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 22:05:31",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:06:52",
+    "error": "スキャン中に例外発生: unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 22:08:32",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:08:32",
+    "error": "スキャン中に例外発生: 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 22:10:13",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:11:33",
+    "error": "スキャン中に例外発生: unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 22:13:14",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:14:55",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:14:55",
+    "error": "スキャン中に例外発生: 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 22:16:15",
+    "error": "スキャン中に例外発生: unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 22:17:56",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 22:40:19",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:42:00",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:43:20",
+    "error": "スキャン中に例外発生: unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 22:45:01",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 22:45:01",
+    "error": "スキャン中に例外発生: 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 22:58:25",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:00:07",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:01:27",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-08 23:01:47",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:01:47",
+    "error": "process_sensor_data中にエラー発生(9436B381-9B68-03E3-1ED5-FC1778E015DC): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 23:03:07",
+    "error": "process_sensor_data_for_ml中にエラー発生(7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A): unsupported operand type(s) for /: 'float' and 'str'"
+  },
+  {
+    "timestamp": "2025-11-08 23:09:06",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:10:46",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:12:07",
+    "error": "process_sensor_data_for_ml中にエラー発生(7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A): Not all parameters were used in the SQL statement"
+  },
+  {
+    "timestamp": "2025-11-08 23:12:27",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:12:27",
+    "error": "process_sensor_data中にエラー発生(9436B381-9B68-03E3-1ED5-FC1778E015DC): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-08 23:19:41",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:21:22",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:23:02",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-08 23:24:43",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 10:50:49",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 10:51:09",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 10:55:05",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 10:56:25",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 10:56:45",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 10:58:26",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:00:07",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:01:47",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:03:07",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:03:27",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:05:08",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:06:49",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:08:29",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:10:10",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:11:50",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:13:31",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:15:11",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:16:52",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:18:32",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:20:13",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:21:53",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:23:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:23:34",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:25:14",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:26:54",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:28:35",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:30:16",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:31:56",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:33:37",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:35:17",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:36:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 11:36:57",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:38:38",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:40:19",
+    "error": "予測に失敗: [Errno 2] No such file or directory: '/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl'"
+  },
+  {
+    "timestamp": "2025-11-09 11:50:38",
+    "error": "スキャン中に例外発生: 1054 (42S22): Unknown column 'predicted_score' in 'field list'"
+  },
+  {
+    "timestamp": "2025-11-09 14:22:00",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 14:46:02",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 15:07:52",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 15:59:15",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:00:56",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:10:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:10:59",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:12:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:26:22",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:28:23",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 16:48:32",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:01:56",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:03:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:05:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:37:35",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:39:16",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:40:56",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:42:37",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:44:17",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:45:58",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:47:38",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:49:19",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:50:39",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:50:59",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:52:39",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:54:20",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:56:00",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 17:57:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:57:40",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 17:59:21",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 18:01:01",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 20:42:54",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 20:44:54",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 20:46:35",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 20:51:29",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 20:56:31",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 20:57:51",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:01:12",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:01:32",
+    "error": "予測に失敗: 123"
+  },
+  {
+    "timestamp": "2025-11-09 21:02:52",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:04:40",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:09:42",
+    "error": "予測に失敗: 'temperature'"
+  },
+  {
+    "timestamp": "2025-11-09 21:16:16",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:17:57",
+    "error": "予測に失敗: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:avg_temperature: object, avg_humidity: object, avg_light: object, avg_pressure: object, avg_sound_level: object, month: object"
+  },
+  {
+    "timestamp": "2025-11-09 21:19:17",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:29:21",
+    "error": "スキャン中に例外発生: Python type Series cannot be converted"
+  },
+  {
+    "timestamp": "2025-11-09 21:34:23",
+    "error": "スキャン中に例外発生: Python type Series cannot be converted"
+  },
+  {
+    "timestamp": "2025-11-09 21:37:43",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:39:24",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:46:28",
+    "error": "予測に失敗: feature_names mismatch: ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'month'] ['0']\nexpected avg_pressure, avg_humidity, avg_light, avg_temperature, avg_sound_level, month in input data\ntraining data did not have the following fields: 0"
+  },
+  {
+    "timestamp": "2025-11-09 21:53:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:55:01",
+    "error": "スキャン中に例外発生: Python type numpy.int64 cannot be converted"
+  },
+  {
+    "timestamp": "2025-11-09 21:57:57",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:59:37",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 21:59:57",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 22:06:19",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-09 22:08:20",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 12:41:03",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:19:23",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:19:44",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:35:49",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:38:34",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:40:30",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:42:10",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:42:30",
+    "error": "デバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 17:47:22",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:13:06",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:14:46",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:18:07",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:21:29",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:23:09",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:25:51",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:32:34",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:42:40",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 21:50:43",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 22:09:04",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 22:15:24",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-20 22:25:47",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
   }
 ]

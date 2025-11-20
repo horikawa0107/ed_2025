@@ -30,7 +30,7 @@ def get_db_connection():
         database='ed_2025'
     )
 
-# 🔽 追加: room_infoテーブルからBLEアドレスを取得する関数
+# 🔽 追加: room_infoテーブルからBLEアドレス（学習用）を取得する関数
 def get_ble_address_capacity_from_db():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -70,6 +70,7 @@ print(f"使用する収容人数: {CAPACITY}")
 print(f"使用するMIST AP: {MIST_AP_ADDRESS}")
 print(f"使用するサービス運用用のOMRON BLEアドレス: {OMRON_ADDRESSES}")
 print(f"使用するサービス運用用のroom_id: {ROOM_IDS}")
+
 
 MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl"
 OMRON_MANUFACTURER_ID = 725
@@ -175,9 +176,17 @@ def train_and_save_model():
     print(f"MSE (平方二乗誤差): {mse:.4f}")
     print("=====================\n")
 
+    
+    # --- 特徴量重要度の表示 ---
+    importances = model.feature_importances_
+    print("\n=== 特徴量の重要度 ===")
+    for feature_name, importance in zip(features, importances):
+        print(f"{feature_name}: {importance:.4f}")
+    print("=======================\n")
     # --- モデルの保存 ---
     model.save_model(MODEL_PATH)
     print("✅ モデルを更新・保存しました")
+    
 
 
 def predict_comfort_score(sensor_data):
@@ -272,7 +281,7 @@ def parse_format_04(data: bytes):
         "battery": data[19] * 0.01
     }
 
-def insert_data_to_sensor_data_for_ml_table(data,device_count,i):
+def insert_data_to_sensor_data_for_ml_table(data,device_count,room_id):
     connection = get_db_connection()
     random_device_count=random.randint(device_count-2, device_count+2)
     cursor = connection.cursor()
@@ -282,7 +291,7 @@ def insert_data_to_sensor_data_for_ml_table(data,device_count,i):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], i,data["temperature"], data["humidity"],
+        data["timestamp"], room_id,data["temperature"], data["humidity"],
         data["pressure"], data["light"],data["sound_level"], random_device_count,
         data["month"], data["battery"]
     ))
@@ -290,7 +299,79 @@ def insert_data_to_sensor_data_for_ml_table(data,device_count,i):
     cursor.close()
     connection.close()
 
-def insert_data_to_sensor_data_table(data,i):
+def generate_advice(data: dict) -> str:
+    month = data["month"]
+    temp = data["temperature"]
+    humidity = data["humidity"]
+    pressure = data["pressure"]
+    sound = data["sound_level"]
+    light = data["light"]
+
+    advice_list = []
+
+    # --- 季節判定 ---
+    # 春: 3-5, 夏: 6-8, 秋: 9-11, 冬: 12-2
+    if month in [6, 7, 8]:
+        season = "summer"
+    elif month in [12, 1, 2]:
+        season = "winter"
+    elif month in [3, 4, 5]:
+        season = "spring"
+    else:
+        season = "autumn"
+
+    # --- 温度アドバイス ---
+    if season == "summer":
+        if temp >= 30:
+            advice_list.append("室温が高く熱中症のリスクがあります。冷房を利用しましょう。")
+        elif temp < 26:
+            advice_list.append("やや涼しめの快適な室温です。")
+
+    elif season == "winter":
+        if temp < 18:
+            advice_list.append("室温が低く寒く感じる可能性があります。暖房を使用してください。")
+        elif temp >= 26:
+            advice_list.append("室温がやや高めです。暖房の調整を検討しましょう。")
+
+    elif season == "spring":
+        if temp < 20:
+            advice_list.append("少し肌寒いかもしれません。")
+
+    elif season == "autumn":
+        if temp > 27:
+            advice_list.append("暑く感じるかもしれません。冷房の使用を検討してください。")
+
+    # --- 音（騒音）アドバイス ---
+    if sound > 70:
+        advice_list.append("騒音レベルが高く、集中しにくい環境です。静かな場所への移動をおすすめします。")
+
+    # --- 気圧アドバイス ---
+    if pressure < 1000:
+        advice_list.append("気圧が低く、頭痛やだるさを感じる人がいるかもしれません。")
+
+    # --- 湿度アドバイス ---
+    if season == "summer" and humidity > 70:
+        advice_list.append("湿度が高く蒸し暑く感じるかもしれません。除湿器や冷房を使用してください。")
+
+    if season == "winter" and humidity < 40:
+        advice_list.append("湿度が低く乾燥しています。加湿器を使いましょう。")
+    
+    # --- 照度アドバイス ---
+    if  light > 750:
+        advice_list.append("少し眩しい環境です。窓を閉めたり、ライトを弱くした方がいいかもしれません。")
+    elif light < 500:
+        advice_list.append("暗くて見えにくい環境です。部屋の照明をつけたり、窓を開けましょう。")
+
+
+
+    # --- 最終出力 ---
+    if advice_list:
+        return " ".join(advice_list)
+    else:
+        return "特になし"
+
+
+def insert_data_to_sensor_data_table(data,room_id):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
@@ -299,7 +380,7 @@ def insert_data_to_sensor_data_table(data,i):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(query, (
-        data["timestamp"], i,data["temperature"], data["humidity"],
+        data["timestamp"], room_id,data["temperature"], data["humidity"],
         data["pressure"], data["light"],data["sound_level"],
         data["month"], data["battery"]
     ))
@@ -307,7 +388,7 @@ def insert_data_to_sensor_data_table(data,i):
     cursor.close()
     connection.close()
 
-def insert_comfort_data(data, comfort_score,i,processed_sensor_data_id):
+def insert_comfort_data(data, comfort_score,room_id,processed_sensor_data_id):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
@@ -315,9 +396,10 @@ def insert_comfort_data(data, comfort_score,i,processed_sensor_data_id):
         VALUES (%s, %s, %s, %s,%s)
     """
     print(f"快適指数:{comfort_score}")
-    advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
+    # advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
+    advice = generate_advice(data)
     cursor.execute(query, (
-        data["timestamp"], i, comfort_score, advice,processed_sensor_data_id
+        data["timestamp"], room_id, comfort_score, advice,processed_sensor_data_id
     ))
     connection.commit()
     cursor.close()
@@ -493,10 +575,10 @@ def log_error(message):
 # BLEスキャン処理
 parsed_counts = {}  # ← omron_addressごとのカウントを保持する辞書
 
-async def periodic_scan(omron_addresses, interval=60):
+async def periodic_scan(interval=60):
     while True:
         try:
-            for i, omron_address in enumerate(OMRON_ADDRESSES, start=1):
+            for omron_address,room_id in zip(OMRON_ADDRESSES, ROOM_IDS):
                 print(f"📡{omron_address}をスキャン中..")
                 scanner = BleakScanner()
                 await scanner.start()
@@ -506,7 +588,7 @@ async def periodic_scan(omron_addresses, interval=60):
                 
 
                 if omron_address not in devices_info:
-                    log_error("デバイスが見つかりません。")
+                    log_error(f"{omron_address}のデバイスが見つかりません。")
                     continue
 
                 
@@ -514,12 +596,12 @@ async def periodic_scan(omron_addresses, interval=60):
                 raw_data = adv_data.manufacturer_data.get(OMRON_MANUFACTURER_ID)
                 
                 if not raw_data:
-                    log_error("Manufacturer data が見つかりません。")
+                    log_error(f"{omron_address}のManufacturer data が見つかりません。")
                     continue
 
                 parsed = parse_format_04(raw_data)
                 if not parsed:
-                    log_error("データフォーマットの解析に失敗しました。")
+                    log_error(f"{omron_address}のデータフォーマットの解析に失敗しました。")
                     continue
 
                 # === データ取得成功 ===
@@ -534,9 +616,9 @@ async def periodic_scan(omron_addresses, interval=60):
                         print(f"エラー：{e}")
                         api_data = int(api_request())
 
-                    insert_data_to_sensor_data_for_ml_table(parsed, api_data, i)
+                    insert_data_to_sensor_data_for_ml_table(parsed, api_data, room_id)
                 else:
-                    insert_data_to_sensor_data_table(parsed, i)
+                    insert_data_to_sensor_data_table(parsed, room_id)
                     
                 # === カウント管理 ===
                 parsed_counts[omron_address] = parsed_counts.get(omron_address, 0) + 1
@@ -546,10 +628,10 @@ async def periodic_scan(omron_addresses, interval=60):
                     print(f"✅ {omron_address}で3回データ取得完了")
                     if omron_address==OMRON_ADDRESS_FOR_ML:
                         print("process_sensor_data_for_ml")
-                        process_sensor_data_for_ml(omron_address,i)
+                        process_sensor_data_for_ml(omron_address,room_id)
                     else:
                         print("process_sensor_data")
-                        process_sensor_data(omron_address,i)
+                        process_sensor_data(omron_address,room_id)
                         lateset_processed_sensor_data=get_lateset_processed_sensor_data()
                         print(f"lateset_processed_sensor_data: {lateset_processed_sensor_data}")
                         current_time = datetime.now()
@@ -573,7 +655,7 @@ async def periodic_scan(omron_addresses, interval=60):
                             print(f"予測快適指数: {comfort_score}")
                             id_value = int(lateset_processed_sensor_data["id"].iloc[0])
 
-                            insert_comfort_data(parsed, comfort_score, i, id_value)
+                            insert_comfort_data(parsed, comfort_score, room_id, id_value)
                         else:
                             print("予測に失敗しました。")
         except Exception as e:
@@ -612,7 +694,7 @@ def cleanup_old_sensor_data():
         print(f"[ERROR] 自動削除中にエラー発生: {e}")
 
 def run_ble_loop():
-    asyncio.run(periodic_scan(OMRON_ADDRESSES))
+    asyncio.run(periodic_scan())
 
 
 @app.route('/')

@@ -3,15 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>部屋選択ページ</title>
+    <style>
+        .header {
+            background-color: #87cefa; /* 青 */
+            color: black;
+            padding: 60px;
+        }
+        .room-form {
+            display: inline-block; /* 横に並べる */
+            margin: 10px;          /* ボタン同士の間隔 */
+        }
+        /* ボタンサイズ調整 */
+        .room-button {
+            padding: 15px 30px;   /* ボタンの大きさ（縦 × 横） */
+            font-size: 18px;      /* 文字の大きさ */
+            border-radius: 10px;  /* 角丸 */
+            border: none;         /* 枠線なし */
+            background-color: #dcdcdc; /* 緑っぽい色 */
+            color: black;         /* 文字色 */
+            cursor: pointer;      /* ホバー時に手の形に */
+        }
+
+        /* ホバー時の効果（任意） */
+        .room-button:hover {
+            background-color: #a9a9a9;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>部屋を選択してください</h1>
+    <h1 style="text-align:center" class="header">快適指数モニター</h1>
     
     {% for room in rooms %}
-        <form action="/look" method="POST">
+        <form class="room-form" action="/look" method="POST">
             <input type="hidden" name="room_id" value="{{ room[0] }}">
             <input type="hidden" name="room_name" value="{{ room[1] }}">
-            <input type="submit" value="{{ room[1] }}">
+            <input class="room-button" type="submit" value="{{ room[1] }}">
         </form>
     {% endfor %}
 </body>
