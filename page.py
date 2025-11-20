@@ -8,14 +8,13 @@ from threading import Thread
 from flask import jsonify
 import requests
 import numpy as np
+from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from flask import Flask, render_template,redirect,request
 import mysql.connector
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from sklearn.ensemble import RandomForestRegressor
-import joblib
 import time
 import threading
 import random
@@ -72,10 +71,20 @@ print(f"使用するMIST AP: {MIST_AP_ADDRESS}")
 print(f"使用するサービス運用用のOMRON BLEアドレス: {OMRON_ADDRESSES}")
 print(f"使用するサービス運用用のroom_id: {ROOM_IDS}")
 
-MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/rf_model_2.pkl"
+MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl"
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
+#------------MIST API------------
+API_TOKEN = "ycQduGG1tfVDuCYRdQDbMPoO2qU66UdD8e2xmIeWSHXQ81ZZxSzHYD5w85vCcKiDbL6lWTbwT124q9EnGTlO6fay6X08KF0w"
+# ORG_ID = "14e64971-8492-40c9-9b5f-c169ea5c6903"
+ORG_ID = "0ec9ad75-1ae0-40b3-bbd8-63ac91775547"
+# SITE_ID = "b9b7b9d1-4823-465c-9bcf-14a0659003c6"
+SITE_ID="22968ecf-ae7b-4d84-8100-670bb522267b"
+# AP_ID = "00000000-0000-0000-1000-5c5b353ecdc3"
+AP_ID = "00000000-0000-0000-1000-5c5b353ecdd7"
+
+#---------------------------------
 UPDATE_INTERVAL = 300  # 1時間ごとに再学習
 
 
@@ -93,56 +102,102 @@ def load_data_from_mysql():
     conn.close()
     return df
 
+def get_lateset_processed_sensor_data():
+    print("processed_sensor_dataから読み込み")
+    conn = get_db_connection()
+    query = """
+        SELECT id,avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, month
+        FROM processed_sensor_data
+        ORDER BY timestamp DESC limit 1;
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
+    return df
+
+
 
 def train_and_save_model():
-    current_time= datetime.now()
+    current_time = datetime.now()
+
     # --- データ取得 ---
     df = load_data_from_mysql()
-    print(f"processed_sensor_data_for_ml:{df}")
-    if df.empty or len(df)<10:
+    print(f"processed_sensor_data_for_ml: {df}")
+    if df.empty or len(df) < 5:
         print(f"{current_time}時点でデータが足りません。学習をスキップします。")
         return
-    
+
     # --- 特徴量と目的変数に分割 ---
-    features = ['avg_temperature', 'avg_humidity', 'avg_light', 'avg_pressure', 'avg_sound_level', 'month']
+    features = [
+        'avg_temperature',
+        'avg_humidity',
+        'avg_light',
+        'avg_pressure',
+        'avg_sound_level',
+        'month'
+    ]
     X = df[features]
     y = df['score_from_avg_device_count']
-    
+
     # --- 学習用・テスト用データに分割 ---
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
-    model.fit(X_train, y_train)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+
+    # --- モデルのロード or 初期化 ---
+    if os.path.exists(MODEL_PATH):
+        print("既存モデルを読み込み、追加学習を実行します...")
+        model = XGBRegressor()
+        model.load_model(MODEL_PATH)
+        model.fit(X_train, y_train, xgb_model=MODEL_PATH)  # ✅ 追加学習
+    else:
+        print("新規モデルを作成します...")
+        model = XGBRegressor(
+            n_estimators=200,
+            max_depth=8,
+            learning_rate=0.05,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            random_state=42,
+            objective='reg:squarederror',
+            tree_method='hist'  # CPU向け高速学習
+        )
+        model.fit(X_train, y_train)
 
     # --- モデルの評価 ---
     y_pred = model.predict(X_test)
     r2 = r2_score(y_test, y_pred)
     mae = mean_absolute_error(y_test, y_pred)
-    mse=mean_squared_error(y_test, y_pred)
-
+    mse = mean_squared_error(y_test, y_pred)
 
     print("\n=== モデル評価結果 ===")
     print(f"R²スコア       : {r2:.4f}")
     print(f"平均絶対誤差 (MAE): {mae:.4f}")
     print(f"MSE (平方二乗誤差): {mse:.4f}")
     print("=====================\n")
-    
-    joblib.dump(model, MODEL_PATH)
 
-    print("✅ モデルを更新しました")
+    # --- モデルの保存 ---
+    model.save_model(MODEL_PATH)
+    print("✅ モデルを更新・保存しました")
+
 
 def predict_comfort_score(sensor_data):
     try:
-        model = joblib.load(MODEL_PATH)
-        current_month = datetime.now().month  
+        model = XGBRegressor()
+        model.load_model(MODEL_PATH)
+        # DataFrame型で来た場合はそのまま型変換
+        # --- DataFrame作り直し（ここが重要）---
+        if isinstance(sensor_data, pd.DataFrame):
+            sensor_data = sensor_data.iloc[0].to_dict()  # 1行目を辞書に変換
+
         new_data = pd.DataFrame([{
-            'avg_temperature': sensor_data["temperature"],
-            'avg_humidity': sensor_data["humidity"],
-            'avg_light': sensor_data["light"],
-            'avg_pressure': sensor_data["pressure"],
-            'avg_sound_level': sensor_data["sound_level"],
-            'month': sensor_data["month"]
+            'avg_temperature': float(sensor_data["avg_temperature"]),
+            'avg_humidity': float(sensor_data["avg_humidity"]),
+            'avg_light': float(sensor_data["avg_light"]),
+            'avg_pressure': float(sensor_data["avg_pressure"]),
+            'avg_sound_level': float(sensor_data["avg_sound_level"]),
+            'month': int(sensor_data["month"])
         }])
+
         prediction = model.predict(new_data)
         return float(prediction[0])
     except Exception as e:
@@ -162,6 +217,46 @@ def api_request():
         log_error(f"天気APIリクエスト失敗: {str(e)}")
         return 0
     
+
+def count_long_connected_devices(api_token: str,
+                                  site_id: str, 
+                                  ap_id: str, 
+                                  threshold_minutes: int = 1) -> int:
+    """
+    特定のAPに接続しているデバイスのうち、uptimeが指定時間以上のデバイス数を返す関数。
+
+    Parameters:
+        api_token (str): MIST APIトークン
+        site_id (str): サイトID
+        ap_id (str): APのID
+        threshold_minutes (int): uptimeの閾値（分単位、デフォルト30分）
+
+    Returns:
+        int: uptimeが閾値以上のデバイス数
+    """
+    # url = f"https://api.ac2.mist.com/api/v1/sites/{site_id}/stats/clients"
+    url = f"https://mist-api-wrapper.onrender.com/api/v1/sites/{site_id}/stats/clients"
+
+    headers = {
+        "Authorization": f"Token {api_token}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print(f"Error {response.status_code}: {response.text}")
+        return 0
+
+    clients = response.json()
+
+    # uptimeがthreshold_minutes分以上のデバイスをカウント
+    threshold_seconds = threshold_minutes * 60
+    long_connected_devices = [
+        c for c in clients
+        if c.get("ap_id") == ap_id and c.get("uptime", 0) >= threshold_seconds
+    ]
+
+    return len(long_connected_devices)
 
 def parse_format_04(data: bytes):
     if len(data) < 20:
@@ -212,17 +307,17 @@ def insert_data_to_sensor_data_table(data,i):
     cursor.close()
     connection.close()
 
-def insert_comfort_data(data, comfort_score,i):
+def insert_comfort_data(data, comfort_score,i,processed_sensor_data_id):
     connection = get_db_connection()
     cursor = connection.cursor()
     query = """
-        INSERT INTO comfort_data (timestamp, room_id, score, advice)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO comfort_data (timestamp, room_id, score, advice,processed_sensor_data_id)
+        VALUES (%s, %s, %s, %s,%s)
     """
     print(f"快適指数:{comfort_score}")
     advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
     cursor.execute(query, (
-        data["timestamp"], i, comfort_score, advice
+        data["timestamp"], i, comfort_score, advice,processed_sensor_data_id
     ))
     connection.commit()
     cursor.close()
@@ -432,16 +527,17 @@ async def periodic_scan(omron_addresses, interval=60):
 
                 # --- データ挿入と処理 ---
                 if omron_address == OMRON_ADDRESS_FOR_ML:
-                    api_data = int(api_request())
+                    try:
+                        api_data= count_long_connected_devices(API_TOKEN, SITE_ID, AP_ID)
+                        print(f"1分以上接続しているデバイス数: {api_data}")
+                    except Exception as e:
+                        print(f"エラー：{e}")
+                        api_data = int(api_request())
+
                     insert_data_to_sensor_data_for_ml_table(parsed, api_data, i)
                 else:
                     insert_data_to_sensor_data_table(parsed, i)
-                    comfort_score = predict_comfort_score(parsed)
-                    if comfort_score:
-                        insert_comfort_data(parsed, comfort_score, i)
-                    else:
-                        print("モデルがまだ作成されていません。もう少々お待ちください。")
-
+                    
                 # === カウント管理 ===
                 parsed_counts[omron_address] = parsed_counts.get(omron_address, 0) + 1
 
@@ -454,7 +550,32 @@ async def periodic_scan(omron_addresses, interval=60):
                     else:
                         print("process_sensor_data")
                         process_sensor_data(omron_address,i)
-                    
+                        lateset_processed_sensor_data=get_lateset_processed_sensor_data()
+                        print(f"lateset_processed_sensor_data: {lateset_processed_sensor_data}")
+                        current_time = datetime.now()
+                        if lateset_processed_sensor_data.empty:
+                            print(f"{current_time}時点でprocessed_sensor_dataにデータが足りません。予測をスキップします。")
+                        else:
+                            # 最新行を辞書形式で取得
+                            features = [
+                                'avg_temperature',
+                                'avg_humidity',
+                                'avg_light',
+                                'avg_pressure',
+                                'avg_sound_level',
+                                'month'
+                            ]
+                            latest_row = lateset_processed_sensor_data.iloc[0][features]
+                            comfort_score = predict_comfort_score(latest_row)
+                        # --- 特徴量と目的変数に分割 ---
+    
+                        if comfort_score is not None:
+                            print(f"予測快適指数: {comfort_score}")
+                            id_value = int(lateset_processed_sensor_data["id"].iloc[0])
+
+                            insert_comfort_data(parsed, comfort_score, i, id_value)
+                        else:
+                            print("予測に失敗しました。")
         except Exception as e:
             log_error(f"スキャン中に例外発生: {str(e)}")
 
@@ -512,8 +633,7 @@ def home():
 def move_display_page():
     room_id = request.form.get("room_id")
     room_name = request.form.get("room_name")
-    print("受け取った room_id:", room_id)
-    print("受け取った room_name:", room_name)
+    print(f"受け取った room_id:{room_id} room_name:{room_name}")
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute(
@@ -521,9 +641,11 @@ def move_display_page():
         (room_id,)
     )
     predicted_data = cursor.fetchone()
+    print(f"predicted_data:{predicted_data}")
+    processed_sensor_data_id=predicted_data["processed_sensor_data_id"]
     cursor.execute(
-        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
-        (room_id,)
+        "SELECT * FROM processed_sensor_data WHERE id = %s",
+        (processed_sensor_data_id,)
     )
     latest_data = cursor.fetchone()
     cursor.execute(
@@ -553,21 +675,20 @@ def move_display_page():
 def get_latest_data(room_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-
-    # 最新データ
-    cursor.execute(
-        "SELECT * FROM processed_sensor_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
-        (room_id,)
-    )
-    latest_data = cursor.fetchone()
-
     # 最新の快適指数
     cursor.execute(
         "SELECT * FROM comfort_data WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1",
         (room_id,)
     )
+    
     predicted_data = cursor.fetchone()
-
+    processed_sensor_data_id=predicted_data["processed_sensor_data_id"]
+    # 最新データ
+    cursor.execute(
+        "SELECT * FROM processed_sensor_data WHERE id = %s",
+        (processed_sensor_data_id,)
+    )
+    latest_data = cursor.fetchone()
     # データ件数
     cursor.execute(
         "SELECT COUNT(*) AS cnt FROM processed_sensor_data WHERE room_id = %s",

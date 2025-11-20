@@ -1,24 +1,27 @@
 import asyncio
 from bleak import BleakScanner
 import json
+import gc
 import pandas as pd
 from datetime import datetime
 from threading import Thread
-    # APIリクエストに必要なライブラリ
+from flask import jsonify
 import requests
+import numpy as np
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error
 from flask import Flask, render_template,redirect,request
 import mysql.connector
 import os
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 import time
 import threading
 import random
 
-app = Flask(__name__)
-# 🔽 ここでデータベースから取得して変数にセット
+
 
 def get_db_connection():
     return mysql.connector.connect(
