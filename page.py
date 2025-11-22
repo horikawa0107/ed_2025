@@ -71,7 +71,7 @@ print(f"使用するMIST AP: {MIST_AP_ADDRESS}")
 print(f"使用するサービス運用用のOMRON BLEアドレス: {OMRON_ADDRESSES}")
 print(f"使用するサービス運用用のroom_id: {ROOM_IDS}")
 
-
+#パスは各自の環境に設定する
 MODEL_PATH="/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl"
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/errors.json"
@@ -86,7 +86,7 @@ SITE_ID="22968ecf-ae7b-4d84-8100-670bb522267b"
 AP_ID = "00000000-0000-0000-1000-5c5b353ecdd7"
 
 #---------------------------------
-UPDATE_INTERVAL = 300  # 1時間ごとに再学習
+UPDATE_INTERVAL = 300  # 5分ごとに再学習
 
 
 
@@ -97,7 +97,7 @@ def load_data_from_mysql():
     query = """
         SELECT avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, month, score_from_avg_device_count
         FROM processed_sensor_data_for_ml
-        ORDER BY timestamp DESC limit 10;
+        ORDER BY timestamp DESC limit 5;
     """
     df = pd.read_sql(query, conn)
     conn.close()
@@ -185,7 +185,7 @@ def train_and_save_model():
     print("=======================\n")
     # --- モデルの保存 ---
     model.save_model(MODEL_PATH)
-    print("✅ モデルを更新・保存しました")
+    print(f"✅ モデルを更新・保存しました:{MODEL_PATH}")
     
 
 
@@ -230,7 +230,7 @@ def api_request():
 def count_long_connected_devices(api_token: str,
                                   site_id: str, 
                                   ap_id: str, 
-                                  threshold_minutes: int = 1) -> int:
+                                  threshold_minutes: int = 5) -> int:
     """
     特定のAPに接続しているデバイスのうち、uptimeが指定時間以上のデバイス数を返す関数。
 
@@ -611,7 +611,7 @@ async def periodic_scan(interval=60):
                 if omron_address == OMRON_ADDRESS_FOR_ML:
                     try:
                         api_data= count_long_connected_devices(API_TOKEN, SITE_ID, AP_ID)
-                        print(f"1分以上接続しているデバイス数: {api_data}")
+                        print(f"5分以上接続しているデバイス数: {api_data}")
                     except Exception as e:
                         print(f"エラー：{e}")
                         api_data = int(api_request())

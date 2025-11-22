@@ -17,12 +17,12 @@
     <p>現在の予測快適指数: <span id="comfort">{{ predicted_data.score }}</span></p>
 <table border="1">
     <tr><th>日時</th><td id="time">{{ latest_data.timestamp }}</td></tr>
-    <tr><th>温度</th><td id="temp">{{ latest_data.avg_temperature }}</td></tr>
-    <tr><th>湿度</th><td id="hum">{{ latest_data.avg_humidity }}</td></tr>
-    <tr><th>照度</th><td id="light">{{ latest_data.avg_light }}</td></tr>
-    <tr><th>気圧</th><td id="pres">{{ latest_data.avg_pressure }}</td></tr>
-    <tr><th>騒音度</th><td id="sound">{{ latest_data.avg_sound_level }}</td></tr>
-    <tr><th>バッテリー</th><td id="batt">{{ latest_data.battery }}</td></tr>
+    <tr><th>温度</th><td id="temp">{{ latest_data.avg_temperature }}°C</td></tr>
+    <tr><th>湿度</th><td id="hum">{{ latest_data.avg_humidity }}%</td></tr>
+    <tr><th>照度</th><td id="light">{{ latest_data.avg_light }}lx</td></tr>
+    <tr><th>気圧</th><td id="pres">{{ latest_data.avg_pressure }}hPa</td></tr>
+    <tr><th>騒音度</th><td id="sound">{{ latest_data.avg_sound_level }}dB</td></tr>
+    <tr><th>バッテリー</th><td id="batt">{{ latest_data.battery }}V</td></tr>
     <!-- <tr><th>推定快適指数</th><td id="comfort">{{ predicted_data.score }}</td></tr> -->
 </table>
     <p>アドバイス: <span id="advice">{{ predicted_data.advice }}</span></p>
@@ -52,12 +52,12 @@
         {% for data_for_log in datas_for_log %}
         <tr>
             <td>{{ data_for_log.timestamp }}</td>
-            <td>{{ data_for_log.avg_temperature }}</td>
-            <td>{{ data_for_log.avg_humidity }}</td>
-            <td>{{ data_for_log.avg_light }}</td>
-            <td>{{ data_for_log.avg_pressure }}</td>
-            <td>{{ data_for_log.avg_sound_level }}</td>
-            <td>{{ data_for_log.battery }}</td>
+            <td>{{ data_for_log.avg_temperature }}°C</td>
+            <td>{{ data_for_log.avg_humidity }}%</td>
+            <td>{{ data_for_log.avg_light }}lx</td>
+            <td>{{ data_for_log.avg_pressure }}hPa</td>
+            <td>{{ data_for_log.avg_sound_level }}dB</td>
+            <td>{{ data_for_log.battery }}V</td>
         </tr>
         {% endfor %}
     </tbody>
