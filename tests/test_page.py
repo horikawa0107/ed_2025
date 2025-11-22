@@ -1,8 +1,11 @@
 # test_sample.py
+# import os
+# import sys
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 import pytest
 import numpy as np
 import pandas as pd
-from page import predict_comfort_score
+from dev_mysql.page import predict_comfort_score
 
 # 正常データ（ce_001）
 
@@ -78,5 +81,4 @@ def test_ce003_missing_values():
 
     # 範囲チェック
     assert 0 <= result <= 100, "欠損値入力の結果が0〜100にありません"
-# import pandas
-# import numpy 
+
