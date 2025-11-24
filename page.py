@@ -117,15 +117,34 @@ def get_lateset_processed_sensor_data():
 
 
 
-def train_and_save_model():
+def train_and_save_model(load_data_func=None):
     current_time = datetime.now()
 
     # --- データ取得 ---
-    df = load_data_from_mysql()
+    if load_data_func is None:
+        df = load_data_from_mysql()
+    else:
+        df = load_data_func()
     print(f"processed_sensor_data_for_ml: {df}")
     if df.empty or len(df) < 5:
         print(f"{current_time}時点でデータが足りません。学習をスキップします。")
         return
+
+    # --- 必須カラムチェック（テストで KeyError を期待） -------------------------------
+    try:
+        required_columns = [
+            'avg_temperature',
+            'avg_humidity',
+            'avg_light',
+            'avg_pressure',
+            'avg_sound_level',
+            'month',
+            'score_from_avg_device_count'
+        ]
+        df = df[required_columns]
+    except Exception as e:
+        raise KeyError
+
 
     # --- 特徴量と目的変数に分割 ---
     features = [
@@ -186,7 +205,6 @@ def train_and_save_model():
     # --- モデルの保存 ---
     model.save_model(MODEL_PATH)
     print(f"✅ モデルを更新・保存しました:{MODEL_PATH}")
-    
 
 
 def predict_comfort_score(sensor_data):
@@ -282,23 +300,26 @@ def parse_format_04(data: bytes):
     }
 
 def insert_data_to_sensor_data_for_ml_table(data,device_count,room_id):
-    connection = get_db_connection()
-    random_device_count=random.randint(device_count-2, device_count+2)
-    cursor = connection.cursor()
-    query = """
-        INSERT INTO sensor_data_for_ml
-        (timestamp, room_id,temperature, humidity, pressure,light, sound_level, device_count,month, battery)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """
-    cursor.execute(query, (
-        data["timestamp"], room_id,data["temperature"], data["humidity"],
-        data["pressure"], data["light"],data["sound_level"], random_device_count,
-        data["month"], data["battery"]
-    ))
-    connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = """
+            INSERT INTO sensor_data_for_ml
+            (timestamp, room_id,temperature, humidity, pressure,light, sound_level, device_count,month, battery)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            data["timestamp"], room_id,data["temperature"], data["humidity"],
+            data["pressure"], data["light"],data["sound_level"], device_count,
+            data["month"], data["battery"]
+        ))
+        connection.commit()
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        log_error(f"insert_data_to_sensor_data_for_ml_table エラー: {e}")
 
+    
 def generate_advice(data: dict) -> str:
     month = data["month"]
     temp = data["temperature"]
@@ -372,38 +393,46 @@ def generate_advice(data: dict) -> str:
 
 
 def insert_data_to_sensor_data_table(data,room_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    query = """
-        INSERT INTO sensor_data
-        (timestamp, room_id,temperature, humidity, pressure,light, sound_level, month, battery)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """
-    cursor.execute(query, (
-        data["timestamp"], room_id,data["temperature"], data["humidity"],
-        data["pressure"], data["light"],data["sound_level"],
-        data["month"], data["battery"]
-    ))
-    connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = """
+            INSERT INTO sensor_data
+            (timestamp, room_id,temperature, humidity, pressure,light, sound_level, month, battery)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            data["timestamp"], room_id,data["temperature"], data["humidity"],
+            data["pressure"], data["light"],data["sound_level"],
+            data["month"], data["battery"]
+        ))
+        connection.commit()
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        log_error(f"insert_data_to_sensor_data_table エラー: {e}")
 
+    
 def insert_comfort_data(data, comfort_score,room_id,processed_sensor_data_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    query = """
-        INSERT INTO comfort_data (timestamp, room_id, score, advice,processed_sensor_data_id)
-        VALUES (%s, %s, %s, %s,%s)
-    """
-    print(f"快適指数:{comfort_score}")
-    # advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
-    advice = generate_advice(data)
-    cursor.execute(query, (
-        data["timestamp"], room_id, comfort_score, advice,processed_sensor_data_id
-    ))
-    connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = """
+            INSERT INTO comfort_data (timestamp, room_id, score, advice,processed_sensor_data_id)
+            VALUES (%s, %s, %s, %s,%s)
+        """
+        print(f"快適指数:{comfort_score}")
+        # advice = "快適です" if comfort_score > 0.7 else "少し調整が必要です"
+        advice = generate_advice(data)
+        cursor.execute(query, (
+            data["timestamp"], room_id, comfort_score, advice,processed_sensor_data_id
+        ))
+        connection.commit()
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        log_error(f"insert_comfort_data エラー: {e}")
+
 
 def background_training():
     """一定時間ごとに再学習"""
@@ -431,20 +460,19 @@ def process_sensor_data(omron_address, room_id):
 
         # データが3件未満ならスキップ
         if len(all_rows) < 3:
-            log_error(f"{omron_address} のデータが3件未満のため、平均計算をスキップしました。({len(all_rows)}件)")
+            log_error(f"{omron_address} の運用用データが3件未満のため、平均計算をスキップしました。({len(all_rows)}件)")
+            if 'conn' in locals() and conn:
+                conn.close()
             return
-
-        print(all_rows[0])
-
 
         # 平均値を算出
         avg_data = {
             'timestamp': all_rows[0]['timestamp'],  # 最新の時刻を使用
-            'avg_temperature': sum(d['temperature'] for d in all_rows) / 3,
-            'avg_humidity': sum(d['humidity'] for d in all_rows) / 3,
-            'avg_light': sum(d['light'] for d in all_rows) / 3,
-            'avg_pressure': sum(d['pressure'] for d in all_rows) / 3,
-            'avg_sound_level': sum(d['sound_level'] for d in all_rows) / 3,
+            'avg_temperature': round(sum(d['temperature'] for d in all_rows) / 3,1),
+            'avg_humidity': round(sum(d['humidity'] for d in all_rows) / 3,1),
+            'avg_light': round(sum(d['light'] for d in all_rows) / 3,1),
+            'avg_pressure': round(sum(d['pressure'] for d in all_rows) / 3,1),
+            'avg_sound_level': round(sum(d['sound_level'] for d in all_rows) / 3,1),
             'battery': all_rows[0]['battery'],
             'month': all_rows[0]['month'],
         }
@@ -494,27 +522,32 @@ def process_sensor_data_for_ml(omron_address,room_id):
         # すべてのデータを取得
         cursor.execute("SELECT * FROM sensor_data_for_ml ORDER BY timestamp DESC limit 3;")
         all_rows = cursor.fetchall()
-        print(all_rows[0])
         cursor.close()
+
+        # データが3件未満ならスキップ
+        if len(all_rows) < 3:
+            log_error(f"{omron_address} の学習用データが3件未満のため、平均計算をスキップしました。({len(all_rows)}件)")
+            if 'conn' in locals() and conn:
+                conn.close()
+            return
         
-        avg_cursor = conn.cursor()
-    
          # 3件未満は無視
         avg_device_count=sum(d['device_count'] for d in all_rows) / 3
         # 平均計算
         avg_data = {
             'timestamp': all_rows[0]['timestamp'],  # 最初の時刻を使う
-            'avg_temperature': sum(d['temperature'] for d in all_rows) / 3,
-            'avg_humidity': sum(d['humidity'] for d in all_rows) / 3,
-            'avg_light': sum(d['light'] for d in all_rows) / 3,
-            'avg_pressure': sum(d['pressure'] for d in all_rows) / 3,
-            'avg_sound_level': sum(d['sound_level'] for d in all_rows) / 3,
-            'avg_device_count':sum(d['device_count'] for d in all_rows) / 3,
+            'avg_temperature': round(sum(d['temperature'] for d in all_rows) / 3,1),
+            'avg_humidity': round(sum(d['humidity'] for d in all_rows) / 3,1),
+            'avg_light': round(sum(d['light'] for d in all_rows) / 3,1),
+            'avg_pressure': round(sum(d['pressure'] for d in all_rows) / 3,1),
+            'avg_sound_level': round(sum(d['sound_level'] for d in all_rows) / 3,1),
+            'avg_device_count':round(sum(d['device_count'] for d in all_rows) / 3,1),
             'battery': all_rows[0]['battery'],
             'month':all_rows[0]['month'],
-            'score_from_avg_device_count':min((avg_device_count/2.5)/CAPACITY*100,100),
+            'score_from_avg_device_count':round(min((avg_device_count/2.5)/CAPACITY*100,100),1),
         }
         # INSERT
+        avg_cursor = conn.cursor()
         avg_cursor.execute("""
             INSERT INTO processed_sensor_data_for_ml (
                 timestamp, room_id,avg_temperature, avg_humidity,   avg_pressure,avg_light,
@@ -613,7 +646,7 @@ async def periodic_scan(interval=60):
                         api_data= count_long_connected_devices(API_TOKEN, SITE_ID, AP_ID)
                         print(f"5分以上接続しているデバイス数: {api_data}")
                     except Exception as e:
-                        print(f"エラー：{e}")
+                        print(f"MIST APIに接続できませんでした。")
                         api_data = int(api_request())
 
                     insert_data_to_sensor_data_for_ml_table(parsed, api_data, room_id)

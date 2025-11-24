@@ -5,8 +5,8 @@
 import pytest
 import numpy as np
 import pandas as pd
-from dev_mysql.page import predict_comfort_score
-
+from page import predict_comfort_score
+import time
 # 正常データ（ce_001）
 
 print(f"pandas:{pd.__version__}")
@@ -82,3 +82,71 @@ def test_ce003_missing_values():
     # 範囲チェック
     assert 0 <= result <= 100, "欠損値入力の結果が0〜100にありません"
 
+
+# -------------------------------
+# ce_004 : 入力形式の検証
+# -------------------------------
+@pytest.mark.parametrize("bad_input", [
+    ["not", "a", "dict"],           # リスト
+    ("tuple", "not dict"),          # タプル
+    12345,                          # 数値
+    None,                           # None
+    {"avg_temperature": 25.0},      # 必須キーが不足
+    pd.DataFrame([[1, 2, 3]]),      # 列名が不足
+])
+def test_ce004_invalid_input_format(bad_input):
+    result = predict_comfort_score(bad_input)
+    assert result is None, "不正な入力でNone以外が返されています"
+
+# -------------------------------
+# ce_005 : ダミーモデルによる精度チェック
+# -------------------------------
+def test_ce005_dummy_model(mocker):
+    class DummyModel:
+        def load_model(self, path):
+            pass
+        def predict(self, df):
+            return np.array([55.5])   # 期待するダミー結果
+    
+    # XGBRegressor を DummyModel に差し替え
+    mocker.patch("page.XGBRegressor", return_value=DummyModel())
+
+    result = predict_comfort_score(normal_input)
+    assert result == 55.5, "ダミーモデルの固定予測値が返っていません"
+
+# -------------------------------
+# ce_006 : 推定速度の確認（1秒以内）
+# -------------------------------
+def test_ce006_prediction_speed(mocker):
+    # ダミーモデルで高速化
+    class DummyModel:
+        def load_model(self, path):
+            pass
+        def predict(self, df):
+            return np.array([50.0])
+
+    mocker.patch("page.XGBRegressor", return_value=DummyModel())
+
+    start = time.perf_counter()
+    result = predict_comfort_score(normal_input)
+    elapsed = time.perf_counter() - start
+
+    assert result is not None
+    assert elapsed < 1.0, f"予測処理が遅すぎます（{elapsed:.3f} sec）"
+
+# -------------------------------
+# ce_007 : モデルファイルの読み込み確認
+# -------------------------------
+def test_ce007_model_load_called(mocker):
+    dummy_model = mocker.MagicMock()
+    dummy_model.predict.return_value = np.array([60.0])
+
+    # return_value に dummy_model を返す
+    mocker.patch("page.XGBRegressor", return_value=dummy_model)
+
+    result = predict_comfort_score(normal_input)
+
+    # load_model が1回呼ばれたか
+    dummy_model.load_model.assert_called_once()
+
+    assert result == 60.0, "モデルが正しく利用されていません"

@@ -15,10 +15,10 @@ def test_db(monkeypatch):
     monkeypatch.setattr("page.get_db_connection", lambda: conn)
 
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM sensor_data")
-    cursor.execute("DELETE FROM sensor_data_for_ml")
-    cursor.execute("DELETE FROM processed_sensor_data")
-    cursor.execute("DELETE FROM processed_sensor_data_for_ml")
+    # cursor.execute("DELETE FROM sensor_data")
+    # cursor.execute("DELETE FROM sensor_data_for_ml")
+    # cursor.execute("DELETE FROM processed_sensor_data")
+    # cursor.execute("DELETE FROM processed_sensor_data_for_ml")
     conn.commit()
 
     return conn

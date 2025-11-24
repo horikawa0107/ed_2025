@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 from unittest.mock import MagicMock
-from dev_mysql.page import train_and_save_model, MODEL_PATH
+from page import train_and_save_model, MODEL_PATH
 # -----------------------------------------------------
 # 正常系：必要な列がすべて揃っている場合
 # -----------------------------------------------------
@@ -34,13 +34,13 @@ def test_train_model_schema_ok(tmp_path, monkeypatch):
 # -----------------------------------------------------
 def test_train_model_schema_missing_columns():
     df_missing = pd.DataFrame({
-        "avg_temperature": [20, 21, 22],
+        "avg_temperature": [20, 21, 22,19,20],
         # 敢えて "avg_humidity" がない
-        "avg_light": [100, 110, 120],
-        "avg_pressure": [1010, 1011, 1012],
-        "avg_sound_level": [30, 40, 50],
-        "month": [1, 1, 1],
-        "score_from_avg_device_count": [3, 4, 5]
+        "avg_light": [100, 110, 120,130,120],
+        "avg_pressure": [1010, 1011, 1012,1010,1013],
+        "avg_sound_level": [30, 40, 50,60,50],
+        "month": [1, 1, 1,1,1],
+        "score_from_avg_device_count": [3, 4, 5,3,4]
     })
 
     mock_loader = MagicMock(return_value=df_missing)

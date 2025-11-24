@@ -16,6 +16,7 @@ import joblib
 
 app = Flask(__name__)
 OMRON_ADDRESS = "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6A"
+
 OMRON_MANUFACTURER_ID = 725
 ERROR_LOG_FILE = "errors.json"
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
