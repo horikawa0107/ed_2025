@@ -3490,5 +3490,617 @@
   {
     "timestamp": "2025-11-20 22:25:47",
     "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:10:35",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:12:16",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:22:05",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:23:25",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:29:17",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:31:21",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:33:26",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:35:11",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:36:52",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:40:14",
+    "error": "予測に失敗: [09:40:14] /Users/runner/work/xgboost/xgboost/src/common/io.cc:144: Opening /Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl failed: No such file or directory\nStack trace:\n  [bt] (0) 1   libxgboost.dylib                    0x0000000138c912dc dmlc::LogMessageFatal::~LogMessageFatal() + 124\n  [bt] (1) 2   libxgboost.dylib                    0x0000000138d88764 xgboost::common::LoadSequentialFile(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>) + 716\n  [bt] (2) 3   libxgboost.dylib                    0x0000000138d20aac XGBoosterLoadModel::$_4::operator()() const + 152\n  [bt] (3) 4   libxgboost.dylib                    0x0000000138d202c8 XGBoosterLoadModel + 416\n  [bt] (4) 5   libffi.dylib                        0x00000001b06e7050 ffi_call_SYSV + 80\n  [bt] (5) 6   libffi.dylib                        0x00000001b06efaf0 ffi_call_int + 1220\n  [bt] (6) 7   _ctypes.cpython-312-darwin.so       0x0000000103f0e63c _ctypes_callproc + 1220\n  [bt] (7) 8   _ctypes.cpython-312-darwin.so       0x0000000103f06ccc PyCFuncPtr_call + 1252\n  [bt] (8) 9   libpython3.12.dylib                 0x00000001033fb27c _PyObject_MakeTpCall + 308\n\n"
+  },
+  {
+    "timestamp": "2025-11-21 09:41:34",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:41:54",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:43:39",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:45:25",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:46:45",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 09:52:13",
+    "error": "予測に失敗: [09:52:13] /Users/runner/work/xgboost/xgboost/src/common/io.cc:144: Opening /Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl failed: No such file or directory\nStack trace:\n  [bt] (0) 1   libxgboost.dylib                    0x0000000138c912dc dmlc::LogMessageFatal::~LogMessageFatal() + 124\n  [bt] (1) 2   libxgboost.dylib                    0x0000000138d88764 xgboost::common::LoadSequentialFile(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>) + 716\n  [bt] (2) 3   libxgboost.dylib                    0x0000000138d20aac XGBoosterLoadModel::$_4::operator()() const + 152\n  [bt] (3) 4   libxgboost.dylib                    0x0000000138d202c8 XGBoosterLoadModel + 416\n  [bt] (4) 5   libffi.dylib                        0x00000001b06e7050 ffi_call_SYSV + 80\n  [bt] (5) 6   libffi.dylib                        0x00000001b06efaf0 ffi_call_int + 1220\n  [bt] (6) 7   _ctypes.cpython-312-darwin.so       0x0000000103f0e63c _ctypes_callproc + 1220\n  [bt] (7) 8   _ctypes.cpython-312-darwin.so       0x0000000103f06ccc PyCFuncPtr_call + 1252\n  [bt] (8) 9   libpython3.12.dylib                 0x00000001033fb27c _PyObject_MakeTpCall + 308\n\n"
+  },
+  {
+    "timestamp": "2025-11-21 09:59:37",
+    "error": "予測に失敗: [09:59:37] /Users/runner/work/xgboost/xgboost/src/common/io.cc:144: Opening /Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/models/comfort_model_xgb.pkl failed: No such file or directory\nStack trace:\n  [bt] (0) 1   libxgboost.dylib                    0x0000000138c912dc dmlc::LogMessageFatal::~LogMessageFatal() + 124\n  [bt] (1) 2   libxgboost.dylib                    0x0000000138d88764 xgboost::common::LoadSequentialFile(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>) + 716\n  [bt] (2) 3   libxgboost.dylib                    0x0000000138d20aac XGBoosterLoadModel::$_4::operator()() const + 152\n  [bt] (3) 4   libxgboost.dylib                    0x0000000138d202c8 XGBoosterLoadModel + 416\n  [bt] (4) 5   libffi.dylib                        0x00000001b06e7050 ffi_call_SYSV + 80\n  [bt] (5) 6   libffi.dylib                        0x00000001b06efaf0 ffi_call_int + 1220\n  [bt] (6) 7   _ctypes.cpython-312-darwin.so       0x0000000103f0e63c _ctypes_callproc + 1220\n  [bt] (7) 8   _ctypes.cpython-312-darwin.so       0x0000000103f06ccc PyCFuncPtr_call + 1252\n  [bt] (8) 9   libpython3.12.dylib                 0x00000001033fb27c _PyObject_MakeTpCall + 308\n\n"
+  },
+  {
+    "timestamp": "2025-11-21 10:02:47",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:06:10",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:07:50",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:11:32",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:15:50",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:19:08",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:22:42",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-21 10:23:03",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:14",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 20:51:56",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 20:55:37",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:29:20",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:33:50",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:38:50",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:41:48",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:50:20",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:54:53",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:55:24",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:19",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:57:49",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 21:59:39",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 22:06:01",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 22:08:11",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 22:18:10",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 22:19:04",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: list indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: tuple indices must be integers or slices, not str"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: 'int' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: 'NoneType' object is not subscriptable"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: 'avg_humidity'"
+  },
+  {
+    "timestamp": "2025-11-22 22:21:10",
+    "error": "予測に失敗: 'avg_temperature'"
+  },
+  {
+    "timestamp": "2025-11-24 10:12:19",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-24 10:13:39",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-24 19:03:39",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-24 19:16:24",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-24 19:19:46",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-27 18:22:54",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:22:54",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:24:38",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:24:38",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:28:14",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:28:14",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:31:03",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:31:03",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:31:25",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:31:25",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 18:37:42",
+    "error": "process_sensor_data_for_ml中にエラー発生(addr1): 'device_count'"
+  },
+  {
+    "timestamp": "2025-11-27 21:37:21",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-27 21:44:03",
+    "error": "7CCA64BD-C54C-EB8E-29D4-2531E81E0D6Aのデバイスが見つかりません。"
+  },
+  {
+    "timestamp": "2025-11-27 21:47:45",
+    "error": "9436B381-9B68-03E3-1ED5-FC1778E015DCのデバイスが見つかりません。"
   }
 ]
