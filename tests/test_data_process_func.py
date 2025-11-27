@@ -67,9 +67,9 @@ def test_process_001_db_connect(monkeypatch):
 
     # 3件与えて正常に通るようにする
     rows = [
-        {"timestamp": 1, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5, "battery": 90, "month": 1},
-        {"timestamp": 2, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5, "battery": 90, "month": 1},
-        {"timestamp": 3, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5, "battery": 90, "month": 1},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5},
     ]
     fake_conn.rows = rows
 
@@ -83,9 +83,9 @@ def test_process_001_db_for_ml_connect(monkeypatch):
 
     # 3件与えて正常に通るようにする
     rows = [
-        {"timestamp": 1, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5,"device_count":5, "battery": 90, "month": 1},
-        {"timestamp": 2, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5,"device_count":5, "battery": 90, "month": 1},
-        {"timestamp": 3, "temperature": 1, "humidity": 2, "light": 3, "pressure": 4, "sound_level": 5,"device_count":5, "battery": 90, "month": 1},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5},
     ]
     fake_conn.rows = rows
 
@@ -132,9 +132,9 @@ def test_process_003_rounding_for_ml(monkeypatch):
     # 平均 = (20.123 + 20.456 + 20.789)/3 = 20.456
     # → 四捨五入で 20.5 になる（コードは float のままなので 20.456 のまま → 仕様要確認）
     rows = [
-        {"timestamp": 10, "temperature": 20.123, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "device_count":5,"battery": 90, "month": 1},
-        {"timestamp": 10, "temperature": 20.456, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "device_count":5,"battery": 90, "month": 1},
-        {"timestamp": 10, "temperature": 20.789, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "device_count":5,"battery": 90, "month": 1},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5,"device_count":10},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5,"device_count":10},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5,"device_count":10},
     ]
 
     fake_conn = FakeConnection(rows=rows)
@@ -154,15 +154,15 @@ def test_process_003_rounding_for_ml(monkeypatch):
 
     inserted = fake_conn.insert_values
     assert inserted is not None, "INSERT が呼ばれていない"
-    assert inserted[2] == 20.5, "平均値の丸めが正しくありません"
+    assert inserted[2] == 20.1, "平均値の丸めが正しくありません"
 
 def test_process_003_rounding(monkeypatch):
     # 平均 = (20.123 + 20.456 + 20.789)/3 = 20.456
     # → 四捨五入で 20.5 になる（コードは float のままなので 20.456 のまま → 仕様要確認）
     rows = [
-        {"timestamp": 10, "temperature": 20.123, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "battery": 90, "month": 1},
-        {"timestamp": 10, "temperature": 20.456, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "battery": 90, "month": 1},
-        {"timestamp": 10, "temperature": 20.789, "humidity": 0, "light": 0, "pressure": 0, "sound_level": 0, "battery": 90, "month": 1},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5},
     ]
 
     fake_conn = FakeConnection(rows=rows)
@@ -182,7 +182,7 @@ def test_process_003_rounding(monkeypatch):
 
     inserted = fake_conn.insert_values
     assert inserted is not None, "INSERT が呼ばれていない"
-    assert inserted[2] == 20.5, "平均値の丸めが正しくありません"
+    assert inserted[2] == 20.1, "平均値の丸めが正しくありません"
 
 
 # ==========================================================
@@ -190,9 +190,9 @@ def test_process_003_rounding(monkeypatch):
 # ==========================================================
 def test_process_004_calculation(monkeypatch):
     rows = [
-        {"timestamp": 10, "temperature": 10, "humidity": 30, "light": 15, "pressure": 20, "sound_level": 40, "battery": 99, "month": 2},
-        {"timestamp": 11, "temperature": 20, "humidity": 40, "light": 25, "pressure": 30, "sound_level": 50, "battery": 99, "month": 2},
-        {"timestamp": 12, "temperature": 30, "humidity": 50, "light": 35, "pressure": 40, "sound_level": 60, "battery": 99, "month": 2},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5},
     ]
 
     fake_conn = FakeConnection(rows=rows)
@@ -208,9 +208,9 @@ def test_process_004_calculation(monkeypatch):
 
     process_sensor_data("addr1", 1)
 
-    t = sum([10,20,30])/3
-    h = sum([30,40,50])/3
-    l = sum([15,25,35])/3
+    t = round((sum([20.18,20.06,19.96])/3),1)
+    h = round(sum([59.17,59.29,59.41])/3,1)
+    l = round(sum([53,57,44])/3,1)
 
     inserted = fake_conn.insert_values
     assert abs(inserted[2] - t) < 0.001
@@ -220,9 +220,9 @@ def test_process_004_calculation(monkeypatch):
 
 def test_process_004_calculation_for_ml(monkeypatch):
     rows = [
-        {"timestamp": 10, "temperature": 10, "humidity": 30, "light": 15, "pressure": 20, "sound_level": 40,"device_count":5, "battery": 99, "month": 2},
-        {"timestamp": 11, "temperature": 20, "humidity": 40, "light": 25, "pressure": 30, "sound_level": 50,"device_count":6, "battery": 99, "month": 2},
-        {"timestamp": 12, "temperature": 30, "humidity": 50, "light": 35, "pressure": 40, "sound_level": 60,"device_count":7, "battery": 99, "month": 2},
+        {"timestamp": 1, "temperature": 20.18, "humidity": 59.17, "light": 53, "pressure": 1020.1, "sound_level": 33.94, "battery": 90, "month": 5},
+        {"timestamp": 2, "temperature": 20.06, "humidity": 59.29, "light": 57, "pressure": 1020, "sound_level": 33.57, "battery": 90, "month": 5},
+        {"timestamp": 3, "temperature": 19.96, "humidity": 59.41, "light": 44, "pressure": 1020.1, "sound_level": 34.3, "battery": 90, "month": 5},
     ]
 
     fake_conn = FakeConnection(rows=rows)
@@ -238,9 +238,9 @@ def test_process_004_calculation_for_ml(monkeypatch):
 
     process_sensor_data("addr1", 1)
 
-    t = sum([10,20,30])/3
-    h = sum([30,40,50])/3
-    l = sum([15,25,35])/3
+    t = round(sum([20.18,20.06,19.96])/3,1)
+    h = round(sum([59.17,59.29,59.41,])/3,1)
+    l = round(sum([53,57,44,])/3,1)
 
     inserted = fake_conn.insert_values
     assert abs(inserted[2] - t) < 0.001

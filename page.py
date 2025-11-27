@@ -78,11 +78,8 @@ ERROR_LOG_FILE = "/Users/horikawafuka2/Documents/class_2025/ed/dev_mysql/errors.
 API_URL = 'https://weather.tsukumijima.net/api/forecast/city/400040'
 #------------MIST API------------
 API_TOKEN = "ycQduGG1tfVDuCYRdQDbMPoO2qU66UdD8e2xmIeWSHXQ81ZZxSzHYD5w85vCcKiDbL6lWTbwT124q9EnGTlO6fay6X08KF0w"
-# ORG_ID = "14e64971-8492-40c9-9b5f-c169ea5c6903"
 ORG_ID = "0ec9ad75-1ae0-40b3-bbd8-63ac91775547"
-# SITE_ID = "b9b7b9d1-4823-465c-9bcf-14a0659003c6"
 SITE_ID="22968ecf-ae7b-4d84-8100-670bb522267b"
-# AP_ID = "00000000-0000-0000-1000-5c5b353ecdc3"
 AP_ID = "00000000-0000-0000-1000-5c5b353ecdd7"
 
 #---------------------------------
@@ -97,7 +94,7 @@ def load_data_from_mysql():
     query = """
         SELECT avg_temperature, avg_humidity, avg_light, avg_pressure, avg_sound_level, month, score_from_avg_device_count
         FROM processed_sensor_data_for_ml
-        ORDER BY timestamp DESC limit 5;
+        ORDER BY timestamp DESC limit 10;
     """
     df = pd.read_sql(query, conn)
     conn.close()
@@ -126,7 +123,7 @@ def train_and_save_model(load_data_func=None):
     else:
         df = load_data_func()
     print(f"processed_sensor_data_for_ml: {df}")
-    if df.empty or len(df) < 5:
+    if df.empty or len(df) < 10:
         print(f"{current_time}時点でデータが足りません。学習をスキップします。")
         return
 
@@ -345,13 +342,13 @@ def generate_advice(data: dict) -> str:
     if season == "summer":
         if temp >= 30:
             advice_list.append("室温が高く熱中症のリスクがあります。冷房を利用しましょう。")
-        elif temp < 26:
+        elif temp < 27:
             advice_list.append("やや涼しめの快適な室温です。")
 
     elif season == "winter":
-        if temp < 18:
+        if temp < 20:
             advice_list.append("室温が低く寒く感じる可能性があります。暖房を使用してください。")
-        elif temp >= 26:
+        elif temp >= 27:
             advice_list.append("室温がやや高めです。暖房の調整を検討しましょう。")
 
     elif season == "spring":
@@ -367,7 +364,7 @@ def generate_advice(data: dict) -> str:
         advice_list.append("騒音レベルが高く、集中しにくい環境です。静かな場所への移動をおすすめします。")
 
     # --- 気圧アドバイス ---
-    if pressure < 1000:
+    if pressure < 1005:
         advice_list.append("気圧が低く、頭痛やだるさを感じる人がいるかもしれません。")
 
     # --- 湿度アドバイス ---
@@ -682,6 +679,7 @@ async def periodic_scan(interval=60):
                             ]
                             latest_row = lateset_processed_sensor_data.iloc[0][features]
                             comfort_score = predict_comfort_score(latest_row)
+                            comfort_score=round(comfort_score,2)
                         # --- 特徴量と目的変数に分割 ---
     
                         if comfort_score is not None:
