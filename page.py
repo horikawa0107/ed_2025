@@ -605,7 +605,7 @@ def log_error(message):
 # BLEスキャン処理
 parsed_counts = {}  # ← omron_addressごとのカウントを保持する辞書
 
-async def periodic_scan(interval=60):
+async def periodic_scan(interval=60, once=False):
     while True:
         try:
             for omron_address,room_id in zip(OMRON_ADDRESSES, ROOM_IDS):
@@ -691,6 +691,8 @@ async def periodic_scan(interval=60):
                             print("予測に失敗しました。")
         except Exception as e:
             log_error(f"スキャン中に例外発生: {str(e)}")
+        if once:
+            break
 
         await asyncio.sleep(interval)
 
