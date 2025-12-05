@@ -71,7 +71,12 @@ const roomId = "{{ room_id }}";
 
 
 function formatTimestamp(ts) {
-    const d = new Date(ts.replace(" ", "T"));
+    const d = new Date(ts); // どんな形式でも Date に任せる
+
+    if (isNaN(d)) {
+        console.error("Invalid timestamp:", ts);
+        return ts;  // 変換できない場合はそのまま返す
+    }
 
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
